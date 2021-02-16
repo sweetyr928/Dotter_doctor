@@ -1,6 +1,7 @@
 package gujc.directtalk9.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.provider.DocumentsContract;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,20 +27,31 @@ import gujc.directtalk9.common.FirestoreAdapter;
 import gujc.directtalk9.model.Board;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class BoardFragment extends Fragment{
 
     private FirestoreAdapter firestoreAdapter;
-    private FirebaseFirestore firestore=null;
+    private static final String TAG = "BoardFragment";
+    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     public BoardFragment() {
     }
@@ -70,7 +82,8 @@ public class BoardFragment extends Fragment{
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext())));
         recyclerView.setAdapter(firestoreAdapter);
-        firestore = FirebaseFirestore.getInstance();
+
+
         return view;
     }
 
@@ -93,7 +106,7 @@ public class BoardFragment extends Fragment{
 
         @Override
         public void onBindViewHolder(BoardFragment.CustomViewHolder viewHolder, int position) {
-            DocumentSnapshot documentSnapshot = getSnapshot(position);
+            final DocumentSnapshot documentSnapshot = getSnapshot(position);
             final Board board = documentSnapshot.toObject(Board.class);
 
             if (board.isMatch()) {
@@ -128,10 +141,12 @@ public class BoardFragment extends Fragment{
                             {
                                 public void onClick(DialogInterface dialog, int which)
                                 {
+                                    documentSnapshot.getReference().update("match", true);
                                     Intent intent = new Intent(getView().getContext(), ChatActivity.class);
                                     intent.putExtra("toUid", board.getId());
                                     intent.putExtra("title",board.getTitle());
                                     startActivity(intent);
+                                   // ismatch(board.getId(),board.getTitle());
                                 }
                             })
                             .setCancelable(false) // 백버튼으로 팝업창이 닫히지 않도록 한다.
@@ -161,5 +176,29 @@ public class BoardFragment extends Fragment{
         }
     }
 
+    public void ismatch(final String userid,final String title) {
+        firestore.collection("Board").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (DocumentSnapshot snapshot : task.getResult()) {
+
+                    Board board;
+                    board = snapshot.toObject(Board.class);
+
+                    assert board != null;
+                    if (board.getId().equals(userid) && !board.isMatch() && board.getTitle().equals(title)) {
+
+                        snapshot.getReference().update("match", true);
+//                        HashMap<String, Object> hashMap = new HashMap<>();
+//                        hashMap.put("match", true);
+//                        firestore.collection("Board").document().set(hashMap);
+
+                    }
+
+                }
+            }
+
+        });
+    }
 }
 

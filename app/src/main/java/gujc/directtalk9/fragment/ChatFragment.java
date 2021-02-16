@@ -388,7 +388,7 @@ public class ChatFragment extends Fragment{
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));
             Request request = new Request.Builder()
                     .header("Content-Type", "application/json")
-                    .addHeader("Authorization", "key=")
+                    .addHeader("Authorization", "key=AAAA_wzV2o8:APA91bG-2kSNeNC18kd4AoB04Vdl1rPNSYiTg0aCnly8h9vOobXPPRd5XU0HC2-Nuxv2NEBmCj-2WeDv7HnEXxDkMY35kBosExObC4uGWTifDZ-qepLpEYXJZ7iH8rxhQKqE2-CKVLq6\t\n")
                     .url("https://fcm.googleapis.com/fcm/send")
                     .post(requestBody)
                     .build();
