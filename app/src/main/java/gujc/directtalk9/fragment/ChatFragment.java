@@ -312,6 +312,7 @@ public class ChatFragment extends Fragment{
         public void onClick(View view) {
             String msg = msg_input.getText().toString();
             sendMessage(msg, "0", null);
+            sendGCM();
             msg_input.setText("");
         }
     };
@@ -364,7 +365,6 @@ public class ChatFragment extends Fragment{
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            //sendGCM();
                             sendBtn.setEnabled(true);
                         }
                     }
@@ -378,7 +378,7 @@ public class ChatFragment extends Fragment{
         Gson gson = new Gson();
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.notification.title = userList.get(myUid).getUsernm();
-        notificationModel.notification.body = msg_input.getText().toString();
+        notificationModel.notification.body = msg_input.getText().toString(); 
         notificationModel.data.title = userList.get(myUid).getUsernm();
         notificationModel.data.body = msg_input.getText().toString();
 
@@ -388,7 +388,7 @@ public class ChatFragment extends Fragment{
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));
             Request request = new Request.Builder()
                     .header("Content-Type", "application/json")
-                    .addHeader("Authorization", "key=AAAA_wzV2o8:APA91bG-2kSNeNC18kd4AoB04Vdl1rPNSYiTg0aCnly8h9vOobXPPRd5XU0HC2-Nuxv2NEBmCj-2WeDv7HnEXxDkMY35kBosExObC4uGWTifDZ-qepLpEYXJZ7iH8rxhQKqE2-CKVLq6\t\n")
+                    .addHeader("Authorization", "key=AAAA_wzV2o8:APA91bG-2kSNeNC18kd4AoB04Vdl1rPNSYiTg0aCnly8h9vOobXPPRd5XU0HC2-Nuxv2NEBmCj-2WeDv7HnEXxDkMY35kBosExObC4uGWTifDZ-qepLpEYXJZ7iH8rxhQKqE2-CKVLq6")
                     .url("https://fcm.googleapis.com/fcm/send")
                     .post(requestBody)
                     .build();

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -21,12 +22,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
         if (remoteMessage.getData().size() > 0) {
-            String title = remoteMessage.getData().get("title").toString();
-            String body = remoteMessage.getData().get("body").toString();
-            sendNotification(body);
+            String title = remoteMessage.getData().get("title");
+            String body = remoteMessage.getData().get("body");
+            String text = title + " : " + body;
+            sendNotification(text);
+
         }
     }
+
 
     private void sendNotification(String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
@@ -38,7 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.splash)
-                        .setContentTitle("FCM Message")
+                        .setContentTitle("New Message")
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
@@ -57,4 +62,5 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
+
 }

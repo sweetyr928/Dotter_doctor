@@ -141,12 +141,11 @@ public class BoardFragment extends Fragment{
                             {
                                 public void onClick(DialogInterface dialog, int which)
                                 {
-                                    documentSnapshot.getReference().update("match", true);
+                                    documentSnapshot.getReference().update("match", true); // 매칭되면 true로 변경
                                     Intent intent = new Intent(getView().getContext(), ChatActivity.class);
                                     intent.putExtra("toUid", board.getId());
                                     intent.putExtra("title",board.getTitle());
                                     startActivity(intent);
-                                   // ismatch(board.getId(),board.getTitle());
                                 }
                             })
                             .setCancelable(false) // 백버튼으로 팝업창이 닫히지 않도록 한다.
@@ -176,29 +175,5 @@ public class BoardFragment extends Fragment{
         }
     }
 
-    public void ismatch(final String userid,final String title) {
-        firestore.collection("Board").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (DocumentSnapshot snapshot : task.getResult()) {
-
-                    Board board;
-                    board = snapshot.toObject(Board.class);
-
-                    assert board != null;
-                    if (board.getId().equals(userid) && !board.isMatch() && board.getTitle().equals(title)) {
-
-                        snapshot.getReference().update("match", true);
-//                        HashMap<String, Object> hashMap = new HashMap<>();
-//                        hashMap.put("match", true);
-//                        firestore.collection("Board").document().set(hashMap);
-
-                    }
-
-                }
-            }
-
-        });
-    }
 }
 
