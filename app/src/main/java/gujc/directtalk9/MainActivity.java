@@ -28,6 +28,7 @@ import gujc.directtalk9.fragment.BoardFragment;
 import gujc.directtalk9.fragment.ChatRoomFragment;
 import gujc.directtalk9.fragment.UserFragment;
 import gujc.directtalk9.fragment.UserListFragment;
+import gujc.directtalk9.fragment.WriteFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -122,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
             switch (position) {
                 case 0: return new BoardFragment();
                 case 1: return new ChatRoomFragment();
-                default: return new UserFragment();
+                default: return new WriteFragment();
             }
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 }

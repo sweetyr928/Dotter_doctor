@@ -25,6 +25,8 @@ import gujc.directtalk9.chat.ChatActivity;
 import gujc.directtalk9.common.FirestoreAdapter;
 import gujc.directtalk9.model.Board;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,9 +34,12 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.Map;
+
 public class BoardFragment extends Fragment{
 
     private FirestoreAdapter firestoreAdapter;
+    private FirebaseFirestore firestore=null;
 
     public BoardFragment() {
     }
@@ -65,7 +70,7 @@ public class BoardFragment extends Fragment{
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext())));
         recyclerView.setAdapter(firestoreAdapter);
-
+        firestore = FirebaseFirestore.getInstance();
         return view;
     }
 
@@ -73,6 +78,7 @@ public class BoardFragment extends Fragment{
         final private RequestOptions requestOptions = new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(90));
         private StorageReference storageReference;
         private String myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
         RecyclerViewAdapter(Query query) {
             super(query);
@@ -100,6 +106,7 @@ public class BoardFragment extends Fragment{
             }
 
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
 
