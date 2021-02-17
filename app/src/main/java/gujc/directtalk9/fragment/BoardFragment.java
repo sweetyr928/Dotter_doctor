@@ -120,7 +120,7 @@ public class BoardFragment extends Fragment {
                             android.R.style.Theme_DeviceDefault_Light_Dialog);
 
                     oDialog.setMessage("채팅을 시작하시겠습니까?")
-                            .setTitle("알림")
+                            .setTitle("          알림")
                             .setPositiveButton("아니오", new DialogInterface.OnClickListener()
                             {
                                 @Override
