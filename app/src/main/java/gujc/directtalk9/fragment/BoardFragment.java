@@ -64,10 +64,16 @@ public class BoardFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board, container, false);
 
-        firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board")); // orderby 추가해야함
+        firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp")); // orderby 추가해야함
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext())));
+        //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
+        LinearLayoutManager manager = new LinearLayoutManager((inflater.getContext()));
+        manager.setReverseLayout(true);
+        manager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
+        //LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
+        //linearSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(firestoreAdapter);
 
 
