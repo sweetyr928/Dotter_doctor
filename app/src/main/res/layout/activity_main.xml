@@ -20,7 +20,7 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <android.support.v4.view.ViewPager
+    <gujc.directtalk9.CustomViewPager
         android:id="@+id/container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,6 +36,6 @@
 
         </com.rahimlis.badgedtablayout.BadgedTabLayout>
 
-    </android.support.v4.view.ViewPager>
+    </gujc.directtalk9.CustomViewPager>
 
 </LinearLayout>
