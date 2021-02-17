@@ -59,14 +59,15 @@
 
                 <TextView
                     android:id="@+id/unread_count"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="35dp"
                     android:layout_marginRight="10dp"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentRight="true"
                     android:textAlignment="center"
                     android:background="@drawable/shape_round"
-                    android:text="0"/>
+                    android:text="0"
+                    android:gravity="center_horizontal" />
         </RelativeLayout>
 
 </LinearLayout>

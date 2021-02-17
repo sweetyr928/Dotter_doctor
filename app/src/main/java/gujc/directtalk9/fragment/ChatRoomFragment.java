@@ -50,6 +50,7 @@ import java.util.TreeMap;
 public class ChatRoomFragment extends Fragment{
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dateFormatHour = new SimpleDateFormat("aa hh:mm");
     private RecyclerViewAdapter mAdapter;
 
     public ChatRoomFragment() {
@@ -130,7 +131,7 @@ public class ChatRoomFragment extends Fragment{
                                 chatRoomModel.setRoomID(document.getId());
 
                                 if (message.getMsg() !=null) { // there are no last message
-                                    chatRoomModel.setLastDatetime(simpleDateFormat.format(message.getTimestamp()));
+                                    chatRoomModel.setLastDatetime(dateFormatHour.format(message.getTimestamp()));
                                     switch(message.getMsgtype()){
                                         case "1": chatRoomModel.setLastMsg("Image"); break;
                                         case "2": chatRoomModel.setLastMsg("File"); break;
