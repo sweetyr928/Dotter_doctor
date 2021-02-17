@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -77,13 +78,17 @@ public class BoardFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board, container, false);
 
-        firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board")); // orderby 추가해야함
+        firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp")); // orderby 추가해야함
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext())));
+        //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
+        LinearLayoutManager manager = new LinearLayoutManager((inflater.getContext()));
+        manager.setReverseLayout(true);
+        manager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
+        //LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
+        //linearSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(firestoreAdapter);
-
-
         return view;
     }
 
@@ -127,14 +132,14 @@ public class BoardFragment extends Fragment{
                             android.R.style.Theme_DeviceDefault_Light_Dialog);
 
                     oDialog.setMessage("채팅을 시작하시겠습니까?")
-                            .setTitle("알림")
+                            .setTitle("             알림")
                             .setPositiveButton("아니오", new DialogInterface.OnClickListener()
                             {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which)
                                 {
                                     Log.i("Dialog", "취소");
-                                    Toast.makeText(getContext(), "취소", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getContext(), "취소", Toast.LENGTH_LONG).show();
                                 }
                             })
                             .setNeutralButton("예", new DialogInterface.OnClickListener()
@@ -172,6 +177,42 @@ public class BoardFragment extends Fragment{
             user_photo = view.findViewById(R.id.user_photo);
             user_name = view.findViewById(R.id.user_name);
             user_title = view.findViewById(R.id.user_title);
+        }
+    }
+
+    public class SnapHelperOneByOne extends LinearSnapHelper {
+
+        @Override
+        public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
+
+            if (!(layoutManager instanceof RecyclerView.SmoothScroller.ScrollVectorProvider)) {
+                return RecyclerView.NO_POSITION;
+            }
+
+            final View currentView = findSnapView(layoutManager);
+
+            if (currentView == null) {
+                return RecyclerView.NO_POSITION;
+            }
+
+            LinearLayoutManager myLayoutManager = (LinearLayoutManager) layoutManager;
+
+            int position1 = myLayoutManager.findFirstVisibleItemPosition();
+            int position2 = myLayoutManager.findLastVisibleItemPosition();
+
+            int currentPosition = layoutManager.getPosition(currentView);
+
+            if (velocityX > 400) {
+                currentPosition = position2;
+            } else if (velocityX < 400) {
+                currentPosition = position1;
+            }
+
+            if (currentPosition == RecyclerView.NO_POSITION) {
+                return RecyclerView.NO_POSITION;
+            }
+
+            return currentPosition;
         }
     }
 

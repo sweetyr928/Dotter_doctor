@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -55,6 +56,7 @@ public class WriteFragment extends Fragment {
                 hashMap.put("name",name_editText.getText().toString());
                 hashMap.put("title", title_editText.getText().toString());
                 hashMap.put("match",false);
+                hashMap.put("timestamp", FieldValue.serverTimestamp());
 
                 firestore.collection("Board").add(hashMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override

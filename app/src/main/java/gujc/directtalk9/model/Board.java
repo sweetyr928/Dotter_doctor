@@ -1,10 +1,21 @@
 package gujc.directtalk9.model;
 
+import java.util.Date;
+
 public class Board {
     public String name;
     public String title;
     public String id;
     public boolean match;
+    private Date timestamp;
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public boolean isMatch() {
         return match;
