@@ -1,13 +1,11 @@
 package gujc.directtalk9.fragment;
 
-import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import gujc.directtalk9.R;
