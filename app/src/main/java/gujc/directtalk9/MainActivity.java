@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.rahimlis.badgedtablayout.BadgedTabLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
+    private BadgedTabLayout tabLayout;
     private FloatingActionButton makeRoomBtn;
 
     @Override
@@ -61,13 +62,16 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
 
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+        tabLayout.setupWithViewPager(mViewPager);
+
+        tabLayout.setIcon(0, R.drawable.account);
+        tabLayout.setIcon(1, R.drawable.baseline_chat_black_18dp);
+        tabLayout.setIcon(2, R.drawable.setting);
 
         sendRegistrationToServer();
 
@@ -129,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
     }
 }

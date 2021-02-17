@@ -378,7 +378,7 @@ public class ChatFragment extends Fragment{
         Gson gson = new Gson();
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.notification.title = userList.get(myUid).getUsernm();
-        notificationModel.notification.body = msg_input.getText().toString(); 
+        notificationModel.notification.body = msg_input.getText().toString();
         notificationModel.data.title = userList.get(myUid).getUsernm();
         notificationModel.data.body = msg_input.getText().toString();
 
