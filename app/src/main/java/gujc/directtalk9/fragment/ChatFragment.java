@@ -502,6 +502,7 @@ public class ChatFragment extends Fragment {
     }
     // =======================================================================================
 
+    //리사이클뷰 어댑터
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         final private RequestOptions requestOptions = new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(90));
 
@@ -523,6 +524,7 @@ public class ChatFragment extends Fragment {
             startListening();
         }
 
+        //채팅내용가져오기
         public void startListening() {
             beforeDay = null;
             messageList.clear();
@@ -705,6 +707,7 @@ public class ChatFragment extends Fragment {
 
     }
 
+    //메시지 리사이클뷰
     private class MessageViewHolder extends RecyclerView.ViewHolder {
         public ImageView user_photo;
         public TextView msg_item;
