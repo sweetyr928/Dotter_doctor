@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -14,7 +15,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rahimlis.badgedtablayout.BadgedTabLayout;
@@ -23,9 +29,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gujc.directtalk9.fragment.BoardFragment;
+import gujc.directtalk9.fragment.ChatFragment;
 import gujc.directtalk9.fragment.ChatRoomFragment;
 import gujc.directtalk9.fragment.UserFragment;
 import gujc.directtalk9.fragment.WriteFragment;
+import gujc.directtalk9.model.Message;
+
+import com.google.firebase.firestore.CollectionReference;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,9 +44,13 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+    private FirebaseFirestore firestore=null;
+    private ListenerRegistration listenerRegistration;
     private ViewPager mViewPager;
     private BadgedTabLayout tabLayout;
-    private FloatingActionButton makeRoomBtn;
+    int counter = 1;
+    private String myUid;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +74,19 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setIcon(0, R.drawable.account);
         tabLayout.setIcon(1, R.drawable.baseline_chat_black_18dp);
         tabLayout.setIcon(2, R.drawable.setting);
+
+        myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firestore = FirebaseFirestore.getInstance();
+
+        if (counter > 0)
+        {
+            tabLayout.setBadgeText(1, String.valueOf(counter));
+        }
+        else
+        {
+            tabLayout.setBadgeText(1, null);
+        }
+
 
         sendRegistrationToServer();
 

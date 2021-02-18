@@ -65,4 +65,3 @@ public class CustomViewPager extends ViewPager {
         return result;
     }
 }
-

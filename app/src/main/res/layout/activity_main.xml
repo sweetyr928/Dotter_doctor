@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         app:layout_scrollFlags="scroll|enterAlways"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        tools:ignore="MissingConstraints">
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -32,6 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="?attr/colorPrimary"
+            app:badgeBackgroundColor="@android:color/white"
+            app:badgeTextSize="11sp"
             app:tabIndicatorColor="?attr/colorPrimary">
 
         </com.rahimlis.badgedtablayout.BadgedTabLayout>
