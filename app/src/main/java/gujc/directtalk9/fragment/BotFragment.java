@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -50,26 +51,18 @@ public class BotFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bot, container, false);
 
-        recyclerView = view.findViewById(R.id.recyclerview);
-//        linearLayoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-        //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
-        //final LinearLayoutManager manager = new LinearLayoutManager((inflater.getContext()));
-//        manager.setReverseLayout(true);
-//        manager.setStackFromEnd(true);
-        //recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
-        //LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
-        //linearSnapHelper.attachToRecyclerView(recyclerView);
-        //recyclerView.setAdapter(firestoreAdapter);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         Button button1 = (Button) view.findViewById(R.id.button1);
         final TextView result = (TextView) view.findViewById(R.id.result);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                result.setText("111");
                 Chatbot chatbot = new Chatbot("Chatbot","hihi");
                 arrayList.add(chatbot);
-
 
             }
         });
@@ -101,17 +94,33 @@ public class BotFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
             final CustomViewHolder customViewHolder = (CustomViewHolder) holder;
-            final Message message = new Message();
-            customViewHolder.botname.setText("Chatbot");
-            customViewHolder.botcontent.setText("hihi");
+            customViewHolder.botname.setText(arrayList.get(position).getName());
+            customViewHolder.botcontent.setText(arrayList.get(position).getCurrent());
+
+            holder.itemView.setTag(position);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String curName  = customViewHolder.botname.getText().toString();
+                    Toast.makeText(view.getContext(), curName, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            customViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    remove(holder.getAdapterPosition());
+                    return true;
+                }
+            });
 
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return (null != arrayList ? arrayList.size()  : 0);
         }
 
         //messageViewholder
@@ -124,13 +133,16 @@ public class BotFragment extends Fragment {
                 this.botname = (TextView) itemView.findViewById(R.id.msg_name);
                 this.botcontent = (TextView) itemView.findViewById(R.id.msg_item);
             }
+
+
         }
 
-        public void remove(int position)   {
-            try {
-
-            }catch (Exception e){
-
+        public void remove(int position){
+            try{
+                arrayList.remove(position);
+                notifyItemRemoved(position);
+            }catch (IndexOutOfBoundsException e){
+                e.printStackTrace();
             }
         }
     }
