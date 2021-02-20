@@ -1,5 +1,6 @@
 package gujc.directtalk9.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,25 +17,31 @@ import android.widget.TextView;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
 
 import gujc.directtalk9.R;
+import gujc.directtalk9.bot.BotAdapter;
 import gujc.directtalk9.common.FirestoreAdapter;
-import gujc.directtalk9.model.Board;
+import gujc.directtalk9.model.Chatbot;
+import gujc.directtalk9.model.Message;
+
 
 public class BotFragment extends Fragment {
     FirestoreAdapter firestoreAdapter;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private Context context;
+    private ArrayList<Chatbot> arrayList = new ArrayList<>();
+    private BotAdapter botAdapter;
 
-    public BotFragment() {
-        // Required empty public constructor
-    }
+//    public BotFragment(ArrayList<Chatbot> arrayList) {
+//        this.arrayList = arrayList;
+//    }
+
+    public BotFragment(){}
 
 
     @NonNull
@@ -43,12 +50,13 @@ public class BotFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bot, container, false);
 
-
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+        recyclerView = view.findViewById(R.id.recyclerview);
+//        linearLayoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(linearLayoutManager);
         //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
-        LinearLayoutManager manager = new LinearLayoutManager((inflater.getContext()));
-        manager.setReverseLayout(true);
-        manager.setStackFromEnd(true);
+        //final LinearLayoutManager manager = new LinearLayoutManager((inflater.getContext()));
+//        manager.setReverseLayout(true);
+//        manager.setStackFromEnd(true);
         //recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
         //LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
         //linearSnapHelper.attachToRecyclerView(recyclerView);
@@ -59,8 +67,10 @@ public class BotFragment extends Fragment {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Chatbot chatbot = new Chatbot("Chatbot","hihi");
+                arrayList.add(chatbot);
 
-                result.setText("111");
+
             }
         });
 
@@ -74,21 +84,28 @@ public class BotFragment extends Fragment {
 
         return view;
 
-
     }
 
-    class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        public static final int msgleft = 0;
+        public static final int msgright = 1;
+        private Context context;
+        FirebaseUser fuser;
+
         @NonNull
         @Override
-        public BotFragment.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            final RequestOptions requestOptions = new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(90));
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.id.item_botmsg_left.parent,false);
-            return null;
+            View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+            return new CustomViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            final CustomViewHolder customViewHolder = (CustomViewHolder) holder;
+            final Message message = new Message();
+            customViewHolder.botname.setText("Chatbot");
+            customViewHolder.botcontent.setText("hihi");
 
         }
 
@@ -96,16 +113,25 @@ public class BotFragment extends Fragment {
         public int getItemCount() {
             return 0;
         }
-    }
 
-    public class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected TextView botname;
-        protected TextView botitem;
+        //messageViewholder
+        public class CustomViewHolder extends RecyclerView.ViewHolder {
+            public TextView botname;
+            public TextView botcontent;
 
-        public CustomViewHolder(@NonNull View itemView) {
-            super(itemView);
-            this.botname = (TextView) itemView.findViewById(R.id.msg_name);
-            this.botitem = (TextView) itemView.findViewById(R.id.msg_item);
+            public CustomViewHolder(@NonNull View itemView) {
+                super(itemView);
+                this.botname = (TextView) itemView.findViewById(R.id.msg_name);
+                this.botcontent = (TextView) itemView.findViewById(R.id.msg_item);
+            }
+        }
+
+        public void remove(int position)   {
+            try {
+
+            }catch (Exception e){
+
+            }
         }
     }
 }

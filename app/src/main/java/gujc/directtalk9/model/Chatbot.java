@@ -1,6 +1,7 @@
 package gujc.directtalk9.model;
 
 public class Chatbot {
+
     private String name;
     private String current;
 

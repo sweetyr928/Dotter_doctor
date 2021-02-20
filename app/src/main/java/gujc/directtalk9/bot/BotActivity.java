@@ -11,9 +11,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 import gujc.directtalk9.R;
 import gujc.directtalk9.fragment.BotFragment;
 import gujc.directtalk9.fragment.WriteFragment;
+import gujc.directtalk9.model.Chatbot;
 
 public class BotActivity extends AppCompatActivity {
     private BotFragment botFragment;

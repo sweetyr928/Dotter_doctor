@@ -68,7 +68,7 @@ public class BoardFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
-        LinearLayoutManager manager = new LinearLayoutManager((inflater.getContext()));
+        LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setReverseLayout(true);
         manager.setStackFromEnd(true);
         recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
