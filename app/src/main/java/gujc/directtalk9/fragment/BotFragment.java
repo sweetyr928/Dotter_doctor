@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
@@ -36,7 +37,8 @@ public class BotFragment extends Fragment {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<Chatbot> arrayList = new ArrayList<>();
-    private BotFragment botFragment;
+    private BotAdapter botAdapter;
+    private String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
 //    public BotFragment(ArrayList<Chatbot> arrayList) {
@@ -55,7 +57,13 @@ public class BotFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        //final FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        arrayList = new ArrayList<>();
+
+        botAdapter = new BotAdapter(arrayList);
+        recyclerView.setAdapter(botAdapter);
+
 
         Button button1 = (Button) view.findViewById(R.id.button1);
         final TextView result = (TextView) view.findViewById(R.id.result);
@@ -63,11 +71,14 @@ public class BotFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 result.setText("111");
-                Chatbot chatbot = new Chatbot(R.drawable.ic_launcher_background,"Chatbot","hihi");
+                Chatbot chatbot;
+                Chatbot chatbot1;
+                chatbot = new Chatbot(fuser,"222");
+                chatbot1 = new Chatbot("Chatbot","hihi");
                 arrayList.add(chatbot);
-                System.out.println(chatbot.getCurrent());
-                ft.detach(BotFragment.this).attach(BotFragment.this).commit();
-                //BotFragment.refresh();
+                arrayList.add(chatbot1);
+                botAdapter.notifyDataSetChanged();
+                //ft.detach(BotFragment.this).attach(BotFragment.this).commit();
             }
         });
 
@@ -76,86 +87,13 @@ public class BotFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 result.setText("222");
+                Chatbot chatbot = new Chatbot(fuser,"222");
+                arrayList.add(chatbot);
+                botAdapter.notifyDataSetChanged();
             }
         });
 
         return view;
 
-    }
-
-    private static void refresh() {
-        refresh();
-    }
-
-    public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        public static final int msgleft = 0;
-        public static final int msgright = 1;
-        private Context context;
-        FirebaseUser fuser;
-
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botmsg_left, parent, false);
-            CustomViewHolder holder = new CustomViewHolder(view);
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
-            final CustomViewHolder customViewHolder = (CustomViewHolder) holder;
-            customViewHolder.cphoto.setImageResource(arrayList.get(position).getPhoto());
-            customViewHolder.botname.setText(arrayList.get(position).getName());
-            customViewHolder.botcontent.setText(arrayList.get(position).getCurrent());
-
-            customViewHolder.itemView.setTag(position);
-            customViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String curName  = customViewHolder.botname.getText().toString();
-                    Toast.makeText(view.getContext(), curName, Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            customViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    remove(holder.getAdapterPosition());
-                    return true;
-                }
-            });
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return (null != arrayList ? arrayList.size()  : 0);
-        }
-
-        //messageViewholder
-        public class CustomViewHolder extends RecyclerView.ViewHolder {
-            public ImageView cphoto;
-            public TextView botname;
-            public TextView botcontent;
-
-            public CustomViewHolder(@NonNull View itemView) {
-                super(itemView);
-                this.cphoto = (ImageView) itemView.findViewById(R.id.bot_photo);
-                this.botname = (TextView) itemView.findViewById(R.id.msg_name);
-                this.botcontent = (TextView) itemView.findViewById(R.id.msg_current);
-            }
-
-
-        }
-
-        public void remove(int position){
-            try{
-                arrayList.remove(position);
-                notifyItemRemoved(position);
-            }catch (IndexOutOfBoundsException e){
-                e.printStackTrace();
-            }
-        }
     }
 }
