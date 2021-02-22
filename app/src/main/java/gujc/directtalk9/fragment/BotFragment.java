@@ -2,6 +2,7 @@ package gujc.directtalk9.fragment;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -65,29 +66,33 @@ public class BotFragment extends Fragment {
         recyclerView.setAdapter(botAdapter);
 
 
-        Button button1 = (Button) view.findViewById(R.id.button1);
+        final Button button1 = (Button) view.findViewById(R.id.button1);
+//        final Button button2 = (Button) view.findViewById(R.id.button2);
+//        final Button button3 = (Button) view.findViewById(R.id.button3);
         final TextView result = (TextView) view.findViewById(R.id.result);
+//        button3.setVisibility(View.INVISIBLE);
+//        button1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                result.setText("111");
+//                Chatbot chatbot;
+//                Chatbot chatbot1;
+//                chatbot = new Chatbot(fuser,"111");
+//                chatbot1 = new Chatbot("Chatbot","hihi1");
+//                button1.setText("222");
+//                button3.setVisibility(View.VISIBLE);
+//
+//                //ft.detach(BotFragment.this).attach(BotFragment.this).commit();
+//            }
+//
+//        });
+//
+//
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 result.setText("111");
-                Chatbot chatbot;
-                Chatbot chatbot1;
-                chatbot = new Chatbot(fuser,"222");
-                chatbot1 = new Chatbot("Chatbot","hihi");
-                arrayList.add(chatbot);
-                arrayList.add(chatbot1);
-                botAdapter.notifyDataSetChanged();
-                //ft.detach(BotFragment.this).attach(BotFragment.this).commit();
-            }
-        });
-
-        Button button2 = (Button) view.findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                result.setText("222");
-                Chatbot chatbot = new Chatbot(fuser,"222");
+                Chatbot chatbot = new Chatbot("bot","hihi");
                 arrayList.add(chatbot);
                 botAdapter.notifyDataSetChanged();
             }
@@ -95,5 +100,8 @@ public class BotFragment extends Fragment {
 
         return view;
 
+
+
     }
+
 }

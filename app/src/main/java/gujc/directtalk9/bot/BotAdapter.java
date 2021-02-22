@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +37,16 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
     @Override
     public BotAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == msgtype_left) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botmsg_left, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botbtn, parent, false);
+            Button button1 = (Button) view.findViewById(R.id.button1);
+            button1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Chatbot chatbot = new Chatbot("bot","hihi");
+                    arrayList.add(chatbot);
+                    notifyAdapter();
+                }
+            });
             return new Holder(view);
         }else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botmsg_right, parent, false);
@@ -87,11 +97,13 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
     public class Holder extends RecyclerView.ViewHolder {
         protected TextView botname;
         protected TextView botcurrent;
+        protected Button btn1;
 
         public Holder(@NonNull View itemView) {
             super(itemView);
             this.botname = (TextView) itemView.findViewById(R.id.msg_name);
             this.botcurrent = (TextView) itemView.findViewById(R.id.msg_current);
+            this.btn1 = (Button) itemView.findViewById(R.id.button1);
         }
     }
 
@@ -103,5 +115,9 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
         }else {
             return msgtype_left;
         }
+    }
+
+    public void notifyAdapter(){
+        notifyDataSetChanged();
     }
 }
