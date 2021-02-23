@@ -42,13 +42,13 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
             button1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Chatbot chatbot = new Chatbot("bot","hihi");
+                    Chatbot chatbot = new Chatbot("bot", "hihi");
                     arrayList.add(chatbot);
                     notifyAdapter();
                 }
             });
             return new Holder(view);
-        }else {
+        } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botmsg_right, parent, false);
             return new Holder(view);
         }
@@ -65,7 +65,7 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
             @Override
             public void onClick(View view) {
                 String curname = holder.botname.getText().toString();
-                Toast.makeText(view.getContext(),curname,Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), curname, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -85,11 +85,11 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
         return (null != arrayList ? arrayList.size() : 0);
     }
 
-    public void remove(int position){
-        try{
+    public void remove(int position) {
+        try {
             arrayList.remove(position);
             notifyItemRemoved(position);
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
     }
@@ -110,14 +110,14 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
     @Override
     public int getItemViewType(int position) {
         String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (arrayList.get(position).getName().equals(fuser)){
+        if (arrayList.get(position).getName().equals(fuser)) {
             return msgtype_right;
-        }else {
+        } else {
             return msgtype_left;
         }
     }
 
-    public void notifyAdapter(){
+    public void notifyAdapter() {
         notifyDataSetChanged();
     }
 }

@@ -502,6 +502,7 @@ public class ChatFragment extends Fragment {
         progressDialog.dismiss();
     }
     // =======================================================================================
+
     //리사이클뷰 어댑터
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         final private RequestOptions requestOptions = new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(90));
