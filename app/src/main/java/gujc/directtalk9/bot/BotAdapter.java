@@ -28,6 +28,7 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
 
     private Context context;
     private ArrayList<Chatbot> arrayList = new ArrayList<>();
+    private String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public BotAdapter(ArrayList<Chatbot> arrayList) {
         this.arrayList = arrayList;
@@ -35,16 +36,35 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
 
     @NonNull
     @Override
-    public BotAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BotAdapter.Holder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         if (viewType == msgtype_left) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botbtn, parent, false);
-            Button button1 = (Button) view.findViewById(R.id.button1);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botbtn2, parent, false);
+            final Button button1 = (Button) view.findViewById(R.id.button1);
             button1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Chatbot chatbot = new Chatbot("bot","hihi");
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botbtn2,parent,false);
+                    Chatbot chatbot = new Chatbot("bot","hihi2");
+                    Chatbot chatbot1 = new Chatbot(fuser, (String) button1.getText());
+                    arrayList.add(chatbot1);
+                    final Button button2 = (Button) view.findViewById(R.id.button1);
                     arrayList.add(chatbot);
-                    notifyAdapter();
+                    if(chatbot1.getCurrent().equals("111")){
+                        button2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Chatbot chatbot2 = new Chatbot("bot","222");
+                                Chatbot chatbot3 = new Chatbot(fuser, (String) button2.getText());
+                                arrayList.add(chatbot2);
+                                arrayList.add(chatbot3);
+                            }
+                        });
+                    }else {
+                        chatbot1 = new Chatbot(fuser, "end");
+                    }
+
+                    notifyDataSetChanged();
+                    //notifyAdapter();
                 }
             });
             return new Holder(view);
@@ -98,12 +118,14 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
         protected TextView botname;
         protected TextView botcurrent;
         protected Button btn1;
+        protected Button btn2;
 
         public Holder(@NonNull View itemView) {
             super(itemView);
             this.botname = (TextView) itemView.findViewById(R.id.msg_name);
             this.botcurrent = (TextView) itemView.findViewById(R.id.msg_current);
             this.btn1 = (Button) itemView.findViewById(R.id.button1);
+            this.btn2 = (Button) itemView.findViewById(R.id.button2);
         }
     }
 
