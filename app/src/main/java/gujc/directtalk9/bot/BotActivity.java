@@ -1,4 +1,3 @@
-
 package gujc.directtalk9.bot;
 
 import android.os.Bundle;
