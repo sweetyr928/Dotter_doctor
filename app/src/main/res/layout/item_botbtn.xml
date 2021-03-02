@@ -68,7 +68,8 @@
                 android:layout_marginRight="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="250dp"/>
+                android:maxWidth="250dp"
+                android:visibility="invisible"/>
             <Button
                 android:id="@+id/button4"
                 android:text="111"
@@ -76,7 +77,8 @@
                 android:layout_marginRight="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="250dp"/>
+                android:maxWidth="250dp"
+                android:visibility="invisible"/>
 
         </LinearLayout>
     </LinearLayout>

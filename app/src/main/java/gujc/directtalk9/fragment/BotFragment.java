@@ -40,6 +40,7 @@ public class BotFragment extends Fragment {
     private ArrayList<Chatbot> arrayList = new ArrayList<>();
     private BotAdapter botAdapter;
     private String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    String mcurrent="";
 
 
 //    public BotFragment(ArrayList<Chatbot> arrayList) {
@@ -65,42 +66,11 @@ public class BotFragment extends Fragment {
         botAdapter = new BotAdapter(arrayList);
         recyclerView.setAdapter(botAdapter);
 
-
-        final Button button1 = (Button) view.findViewById(R.id.button1);
-//        final Button button2 = (Button) view.findViewById(R.id.button2);
-//        final Button button3 = (Button) view.findViewById(R.id.button3);
-        final TextView result = (TextView) view.findViewById(R.id.result);
-//        button3.setVisibility(View.INVISIBLE);
-//        button1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                result.setText("111");
-//                Chatbot chatbot;
-//                Chatbot chatbot1;
-//                chatbot = new Chatbot(fuser,"111");
-//                chatbot1 = new Chatbot("Chatbot","hihi1");
-//                button1.setText("222");
-//                button3.setVisibility(View.VISIBLE);
-//
-//                //ft.detach(BotFragment.this).attach(BotFragment.this).commit();
-//            }
-//
-//        });
-//
-//
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                result.setText("111");
-                Chatbot chatbot = new Chatbot("bot","hihi");
-                arrayList.add(chatbot);
-                botAdapter.notifyDataSetChanged();
-            }
-        });
+        Chatbot chatbot = new Chatbot("bot","start");
+        arrayList.add(chatbot);
+        botAdapter.notifyDataSetChanged();
 
         return view;
-
-
 
     }
 
