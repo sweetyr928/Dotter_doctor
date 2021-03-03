@@ -38,35 +38,7 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
     @Override
     public BotAdapter.Holder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         if (viewType == msgtype_left) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botbtn2, parent, false);
-            final Button button1 = (Button) view.findViewById(R.id.button1);
-            button1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botbtn2,parent,false);
-                    Chatbot chatbot = new Chatbot("bot","hihi2");
-                    Chatbot chatbot1 = new Chatbot(fuser, (String) button1.getText());
-                    arrayList.add(chatbot1);
-                    final Button button2 = (Button) view.findViewById(R.id.button1);
-                    arrayList.add(chatbot);
-                    if(chatbot1.getCurrent().equals("111")){
-                        button2.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Chatbot chatbot2 = new Chatbot("bot","222");
-                                Chatbot chatbot3 = new Chatbot(fuser, (String) button2.getText());
-                                arrayList.add(chatbot2);
-                                arrayList.add(chatbot3);
-                            }
-                        });
-                    }else {
-                        chatbot1 = new Chatbot(fuser, "end");
-                    }
-
-                    notifyDataSetChanged();
-                    //notifyAdapter();
-                }
-            });
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botbtn, parent, false);
             return new Holder(view);
         }else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botmsg_right, parent, false);
