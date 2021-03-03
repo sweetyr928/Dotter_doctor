@@ -22,8 +22,12 @@ import android.widget.Toast;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -32,6 +36,8 @@ import gujc.directtalk9.bot.BotAdapter;
 import gujc.directtalk9.common.FirestoreAdapter;
 import gujc.directtalk9.model.Chatbot;
 import gujc.directtalk9.model.Message;
+import gujc.directtalk9.model.UserModel;
+import okhttp3.internal.cache.DiskLruCache;
 
 
 public class BotFragment extends Fragment {
@@ -39,12 +45,11 @@ public class BotFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<Chatbot> arrayList = new ArrayList<>();
     private BotAdapter botAdapter;
+    private UserModel user;
     private String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-
-//    public BotFragment(ArrayList<Chatbot> arrayList) {
-//        this.arrayList = arrayList;
-//    }
+    private String mcurrent ="nmtest";
+    private String ucurrent = "";
+    private String bcurrent = "";
 
     public BotFragment(){}
 
@@ -58,45 +63,118 @@ public class BotFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        //final FragmentTransaction ft = getFragmentManager().beginTransaction();
-
         arrayList = new ArrayList<>();
-
         botAdapter = new BotAdapter(arrayList);
         recyclerView.setAdapter(botAdapter);
 
-
         final Button button1 = (Button) view.findViewById(R.id.button1);
-//        final Button button2 = (Button) view.findViewById(R.id.button2);
-//        final Button button3 = (Button) view.findViewById(R.id.button3);
-        final TextView result = (TextView) view.findViewById(R.id.result);
-//        button3.setVisibility(View.INVISIBLE);
-//        button1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                result.setText("111");
-//                Chatbot chatbot;
-//                Chatbot chatbot1;
-//                chatbot = new Chatbot(fuser,"111");
-//                chatbot1 = new Chatbot("Chatbot","hihi1");
-//                button1.setText("222");
-//                button3.setVisibility(View.VISIBLE);
-//
-//                //ft.detach(BotFragment.this).attach(BotFragment.this).commit();
-//            }
-//
-//        });
-//
-//
-        button1.setOnClickListener(new View.OnClickListener() {
+        final Button button2 = (Button) view.findViewById(R.id.button2);
+        final Button button3 = (Button) view.findViewById(R.id.button3);
+        final Button button4 = (Button) view.findViewById(R.id.button4);
+
+        DocumentReference ref = FirebaseFirestore.getInstance().collection("users").document(fuser);
+        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View view) {
-                result.setText("111");
-                Chatbot chatbot = new Chatbot("bot","hihi");
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                user = documentSnapshot.toObject(UserModel.class);
+                Chatbot chatbot = new Chatbot("bot", "안녕하세요"+ user.getUsernm() + "님이 맞나요?");
                 arrayList.add(chatbot);
                 botAdapter.notifyDataSetChanged();
             }
         });
+
+
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Chatbot chatbot = new Chatbot(fuser, mcurrent);
+                switch (chatbot.getCurrent()) {
+                    case "nmtest": {
+                        mcurrent = "nmyes";
+                        ucurrent = "네";
+                        bcurrent = "어디가 아프신가요?";
+                        button1.setText("상체");
+                        button2.setText("하체");
+                        break;
+                    }
+                    case "nmyes": {
+                        mcurrent = "dnl";
+                        ucurrent = "상체";
+                        bcurrent = "더 자세히 알려주세요1";
+                        button1.setText("머리");
+                        button2.setText("가슴");
+                        button3.setText("배");
+                        button3.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                    case "dnl":{
+                        mcurrent = "head";
+                        ucurrent = "머리";
+                        bcurrent = "더 자세히 알려주세요2";
+                        button1.setText("얼굴");
+                        button2.setText("얼굴 외");
+                        break;
+                    }
+                    case "head": {
+                        mcurrent = "face";
+                        ucurrent = "얼굴";
+                        bcurrent = "더 자세히 알려주세요3";
+                        button1.setText("눈");
+                        button2.setText("코");
+                        button3.setText("입");
+                        break;
+                    }
+                    case "face": {
+                        mcurrent = "card";
+                        ucurrent = "눈";
+                        bcurrent = "더 자세히 알려주세요4";
+                        button1.setText("결제");
+                        break;
+                    }
+                    case "card": {
+                        mcurrent = "cyes";
+                        ucurrent = "이카드로 진행할까요?";
+                        bcurrent = "이카드로 진행할까요?";
+                        button1.setText("yes");
+                        button2.setText("no");
+                        button3.setVisibility(View.GONE);
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+                chatbot = new Chatbot(fuser, ucurrent);
+                Chatbot chatbot1 = new Chatbot("bot", bcurrent);
+                arrayList.add(chatbot);
+                arrayList.add(chatbot1);
+                botAdapter.notifyDataSetChanged();
+            }
+        });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Chatbot chatbot = new Chatbot(fuser, mcurrent);
+                switch (chatbot.getCurrent()) {
+                    case "nmtest": {
+                        mcurrent = "nmno";
+                        ucurrent = "아니요";
+                        bcurrent = "끗";
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+                chatbot = new Chatbot(fuser, ucurrent);
+                Chatbot chatbot1 = new Chatbot("bot", bcurrent);
+                arrayList.add(chatbot);
+                arrayList.add(chatbot1);
+                botAdapter.notifyDataSetChanged();
+            }
+        });
+
 
         return view;
 

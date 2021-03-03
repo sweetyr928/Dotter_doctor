@@ -28,6 +28,7 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
 
     private Context context;
     private ArrayList<Chatbot> arrayList = new ArrayList<>();
+    private String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public BotAdapter(ArrayList<Chatbot> arrayList) {
         this.arrayList = arrayList;
@@ -35,20 +36,11 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
 
     @NonNull
     @Override
-    public BotAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BotAdapter.Holder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         if (viewType == msgtype_left) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botbtn, parent, false);
-            Button button1 = (Button) view.findViewById(R.id.button1);
-            button1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Chatbot chatbot = new Chatbot("bot", "hihi");
-                    arrayList.add(chatbot);
-                    notifyAdapter();
-                }
-            });
             return new Holder(view);
-        } else {
+        }else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_botmsg_right, parent, false);
             return new Holder(view);
         }
@@ -65,7 +57,7 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
             @Override
             public void onClick(View view) {
                 String curname = holder.botname.getText().toString();
-                Toast.makeText(view.getContext(), curname, Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(),curname,Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -85,11 +77,11 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
         return (null != arrayList ? arrayList.size() : 0);
     }
 
-    public void remove(int position) {
-        try {
+    public void remove(int position){
+        try{
             arrayList.remove(position);
             notifyItemRemoved(position);
-        } catch (IndexOutOfBoundsException e) {
+        }catch (IndexOutOfBoundsException e){
             e.printStackTrace();
         }
     }
@@ -98,26 +90,28 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
         protected TextView botname;
         protected TextView botcurrent;
         protected Button btn1;
+        protected Button btn2;
 
         public Holder(@NonNull View itemView) {
             super(itemView);
             this.botname = (TextView) itemView.findViewById(R.id.msg_name);
             this.botcurrent = (TextView) itemView.findViewById(R.id.msg_current);
             this.btn1 = (Button) itemView.findViewById(R.id.button1);
+            this.btn2 = (Button) itemView.findViewById(R.id.button2);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
         String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (arrayList.get(position).getName().equals(fuser)) {
+        if (arrayList.get(position).getName().equals(fuser)){
             return msgtype_right;
-        } else {
+        }else {
             return msgtype_left;
         }
     }
 
-    public void notifyAdapter() {
+    public void notifyAdapter(){
         notifyDataSetChanged();
     }
 }

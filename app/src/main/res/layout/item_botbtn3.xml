@@ -45,6 +45,40 @@
                 android:autoLink="all"
                 android:text="msg"/>
 
+            <Button
+                android:id="@+id/button1"
+                android:text="11111"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="250dp"/>
+            <Button
+                android:id="@+id/button2"
+                android:text="22222"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="250dp"/>
+            <Button
+                android:id="@+id/button3"
+                android:text="33333"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="250dp"/>
+            <Button
+                android:id="@+id/button4"
+                android:text="44444"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="250dp"/>
+
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
