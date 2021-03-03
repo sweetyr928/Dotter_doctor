@@ -152,6 +152,7 @@ public class BotFragment extends Fragment {
             }
         });
 
+        //버튼2
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
