@@ -9,18 +9,6 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        app:title="@string/app_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        tools:ignore="MissingConstraints">
-
-    </androidx.appcompat.widget.Toolbar>
-
     <gujc.directtalk9.CustomViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"

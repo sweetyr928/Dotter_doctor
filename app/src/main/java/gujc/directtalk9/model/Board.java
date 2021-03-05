@@ -8,6 +8,24 @@ public class Board {
     public String id;
     public boolean match;
     private Date timestamp;
+    public String doctor;
+    public String hospital;
+
+    public String getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(String doctor) {
+        this.doctor = doctor;
+    }
+
+    public String getHospital() {
+        return hospital;
+    }
+
+    public void setHospital(String hospital) {
+        this.hospital = hospital;
+    }
 
     public Date getTimestamp() {
         return timestamp;

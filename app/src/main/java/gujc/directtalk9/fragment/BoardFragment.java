@@ -26,8 +26,12 @@ import gujc.directtalk9.R;
 import gujc.directtalk9.chat.ChatActivity;
 import gujc.directtalk9.common.FirestoreAdapter;
 import gujc.directtalk9.model.Board;
+import gujc.directtalk9.model.Chatbot;
+import gujc.directtalk9.model.UserModel;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -39,6 +43,10 @@ public class BoardFragment extends Fragment {
     private FirestoreAdapter firestoreAdapter;
     private static final String TAG = "BoardFragment";
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private UserModel user;
+    public String doctor="";
+    public String hospital="";
 
     public BoardFragment() {
     }
@@ -134,7 +142,22 @@ public class BoardFragment extends Fragment {
                             {
                                 public void onClick(DialogInterface dialog, int which)
                                 {
-                                    documentSnapshot.getReference().update("match", true); // 매칭되면 true로 변경
+
+
+                                    DocumentReference ref = FirebaseFirestore.getInstance().collection("users").document(fuser);
+                                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            user = documentSnapshot.toObject(UserModel.class);
+                                            doctor = user.getUsernm();
+                                            hospital = user.getUsermsg();
+                                        }
+                                    });
+
+                                    documentSnapshot.getReference().update("match", true);
+                                    documentSnapshot.getReference().update("doctor", doctor);
+                                    documentSnapshot.getReference().update("hospital", hospital);
+
                                     Intent intent = new Intent(getView().getContext(), ChatActivity.class);
                                     intent.putExtra("toUid", board.getId());
                                     intent.putExtra("title",board.getTitle());
