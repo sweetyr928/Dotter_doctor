@@ -1,14 +1,10 @@
 package gujc.directtalk9.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Rect;
-import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,29 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import gujc.directtalk9.R;
 import gujc.directtalk9.bot.BotAdapter;
-import gujc.directtalk9.common.FirestoreAdapter;
 import gujc.directtalk9.model.Chatbot;
-import gujc.directtalk9.model.Message;
 import gujc.directtalk9.model.UserModel;
-import okhttp3.internal.cache.DiskLruCache;
 
 
 public class BotFragment extends Fragment {
@@ -51,6 +43,7 @@ public class BotFragment extends Fragment {
     private String mcurrent ="nmtest";
     private String ucurrent = "";
     private String bcurrent = "";
+    private List<String> arrayboard = new ArrayList<String>();
 
     public BotFragment(){}
 
@@ -78,7 +71,7 @@ public class BotFragment extends Fragment {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 user = documentSnapshot.toObject(UserModel.class);
-                Chatbot chatbot = new Chatbot("bot", "안녕하세요 "+ user.getUsernm() + " 님이 맞나요?");
+                Chatbot chatbot = new Chatbot("bot", "안녕하세요"+ user.getUsernm() + "님이 맞나요?");
                 arrayList.add(chatbot);
                 botAdapter.notifyDataSetChanged();
             }
@@ -94,67 +87,47 @@ public class BotFragment extends Fragment {
                         mcurrent = "nmyes";
                         ucurrent = "네";
                         bcurrent = "어디가 아프신가요?";
+                        arrayboard.add("문진");
                         button1.setText("상체");
                         button2.setText("하체");
-                        chatbot = new Chatbot(fuser, ucurrent);
-                        Chatbot chatbot1 = new Chatbot("bot", bcurrent);
-                        arrayList.add(chatbot);
-                        arrayList.add(chatbot1);
-                        botAdapter.notifyDataSetChanged();
                         break;
                     }
                     case "nmyes": {
                         mcurrent = "dnl";
                         ucurrent = "상체";
                         bcurrent = "더 자세히 알려주세요1";
+                        arrayboard.add(ucurrent);
                         button1.setText("머리");
                         button2.setText("가슴");
                         button3.setText("배");
                         button3.setVisibility(View.VISIBLE);
-                        chatbot = new Chatbot(fuser, ucurrent);
-                        Chatbot chatbot1 = new Chatbot("bot", bcurrent);
-                        arrayList.add(chatbot);
-                        arrayList.add(chatbot1);
-                        botAdapter.notifyDataSetChanged();
                         break;
                     }
                     case "dnl":{
                         mcurrent = "head";
                         ucurrent = "머리";
                         bcurrent = "더 자세히 알려주세요2";
+                        arrayboard.add(ucurrent);
                         button1.setText("얼굴");
                         button2.setText("얼굴 외");
-                        chatbot = new Chatbot(fuser, ucurrent);
-                        Chatbot chatbot1 = new Chatbot("bot", bcurrent);
-                        arrayList.add(chatbot);
-                        arrayList.add(chatbot1);
-                        botAdapter.notifyDataSetChanged();
                         break;
                     }
                     case "head": {
                         mcurrent = "face";
                         ucurrent = "얼굴";
                         bcurrent = "더 자세히 알려주세요3";
+                        arrayboard.add(ucurrent);
                         button1.setText("눈");
                         button2.setText("코");
                         button3.setText("입");
-                        chatbot = new Chatbot(fuser, ucurrent);
-                        Chatbot chatbot1 = new Chatbot("bot", bcurrent);
-                        arrayList.add(chatbot);
-                        arrayList.add(chatbot1);
-                        botAdapter.notifyDataSetChanged();
                         break;
                     }
                     case "face": {
                         mcurrent = "card";
                         ucurrent = "눈";
                         bcurrent = "더 자세히 알려주세요4";
+                        arrayboard.add(ucurrent);
                         button1.setText("결제");
-                        chatbot = new Chatbot(fuser, ucurrent);
-                        Chatbot chatbot1 = new Chatbot("bot", bcurrent);
-                        arrayList.add(chatbot);
-                        arrayList.add(chatbot1);
-                        botAdapter.notifyDataSetChanged();
                         break;
                     }
                     case "card": {
@@ -164,19 +137,29 @@ public class BotFragment extends Fragment {
                         button1.setText("yes");
                         button2.setText("no");
                         button3.setVisibility(View.GONE);
-                        chatbot = new Chatbot(fuser, ucurrent);
-                        Chatbot chatbot1 = new Chatbot("bot", bcurrent);
-                        arrayList.add(chatbot);
-                        arrayList.add(chatbot1);
-                        botAdapter.notifyDataSetChanged();
                         break;
                     }
-                    case "cyes":
-                    {
+                    case "cyes": {
                         mcurrent = "match";
                         button1.setText("의사 매칭하기");
                         button2.setVisibility(View.GONE);
                         button3.setVisibility(View.GONE);
+                        button4.setVisibility(View.GONE);
+                        String strboard = String.valueOf(arrayboard);
+                        Map<String,Object> boardcur = new HashMap<>();
+                        boardcur.put("title",strboard);
+                        boardcur.put("id",fuser);
+                        boardcur.put("timestamp", new Timestamp(new Date()));
+                        boardcur.put("name",user.getUsernm()+" 님");
+                        boardcur.put("match",false);
+
+                        FirebaseFirestore.getInstance().collection("Board").document().set(boardcur)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                    }
+                                });
                         break;
                     }
                     case "match":{
@@ -187,7 +170,12 @@ public class BotFragment extends Fragment {
                         break;
                     }
                 }
-
+                chatbot = new Chatbot(fuser, ucurrent);
+                Chatbot chatbot1 = new Chatbot("bot", bcurrent);
+                arrayList.add(chatbot);
+                arrayList.add(chatbot1);
+                botAdapter.notifyDataSetChanged();
+                System.out.println(arrayboard);
             }
         });
 
@@ -215,11 +203,7 @@ public class BotFragment extends Fragment {
             }
         });
 
-
-
         return view;
-
-
 
     }
 

@@ -10,6 +10,42 @@ public class Board {
     private Date timestamp;
     public String doctor;
     public String hospital;
+    public String doctorid;
+    public String board1;
+    public String board2;
+    public String board3;
+
+    public String getDoctorid() {
+        return doctorid;
+    }
+
+    public void setDoctorid(String doctorid) {
+        this.doctorid = doctorid;
+    }
+
+    public String getBoard1() {
+        return board1;
+    }
+
+    public void setBoard1(String board1) {
+        this.board1 = board1;
+    }
+
+    public String getBoard2() {
+        return board2;
+    }
+
+    public void setBoard2(String board2) {
+        this.board2 = board2;
+    }
+
+    public String getBoard3() {
+        return board3;
+    }
+
+    public void setBoard3(String board3) {
+        this.board3 = board3;
+    }
 
     public String getDoctor() {
         return doctor;
