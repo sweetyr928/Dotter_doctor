@@ -1,36 +1,27 @@
 package gujc.directtalk9.fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.WriteBatch;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +51,9 @@ public class BotFragment extends Fragment {
     private String bcurrent = "";
     private List<String> arrayboard = new ArrayList<String>();
     public String doctor="";
+    public String hospital="";
+
+    public String doctor="";
     public String doctorid="";
     public String hospital="";
     SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
@@ -84,7 +78,6 @@ public class BotFragment extends Fragment {
         botAdapter = new BotAdapter(arrayList);
         recyclerView.setAdapter(botAdapter);
 
-
         final Button button1 = (Button) view.findViewById(R.id.button1);
         final Button button2 = (Button) view.findViewById(R.id.button2);
         final Button button3 = (Button) view.findViewById(R.id.button3);
@@ -105,7 +98,6 @@ public class BotFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Chatbot chatbot = new Chatbot(fuser, mcurrent);
-
                 switch (chatbot.getCurrent()) {
                     case "nmtest": {
                         mcurrent = "nmyes";
@@ -197,6 +189,32 @@ public class BotFragment extends Fragment {
                         pd1 = ProgressDialog.show(getContext(), "", "매칭 중");
                         toDialog();
 
+                        break;
+                    }
+                    case "match":{
+
+//                        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                            @Override
+//                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                                board = documentSnapshot.toObject(Board.class);
+//                                doctor = board.getDoctor();
+//                                hospital = board.getHospital();
+//                            }
+//                        });
+                        System.out.println(doctor);
+                        System.out.println(hospital);
+
+                        ProgressDialog pd1 = ProgressDialog.show(getContext(), "", "매칭 중");
+                        pd1.show();
+
+                        /*if (board.isRequest()) {
+                            pd1.dismiss();
+                            CustomDialog customDialog = new CustomDialog(getContext());
+                            customDialog.callFunction(doctor,hospital);
+                        }
+                        else {
+                            pd1.show();
+                        }*/
                         break;
                     }
                     default: {
