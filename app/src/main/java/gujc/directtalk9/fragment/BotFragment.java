@@ -1,36 +1,50 @@
 package gujc.directtalk9.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import gujc.directtalk9.CustomDialog;
+import gujc.directtalk9.MainActivity;
 import gujc.directtalk9.R;
 import gujc.directtalk9.bot.BotAdapter;
+import gujc.directtalk9.model.Board;
 import gujc.directtalk9.model.Chatbot;
 import gujc.directtalk9.model.UserModel;
+
+import static android.content.ContentValues.TAG;
 
 
 public class BotFragment extends Fragment {
@@ -39,13 +53,21 @@ public class BotFragment extends Fragment {
     private ArrayList<Chatbot> arrayList = new ArrayList<>();
     private BotAdapter botAdapter;
     private UserModel user;
+    private Board board;
     private String fuser = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String mcurrent ="nmtest";
     private String ucurrent = "";
     private String bcurrent = "";
     private List<String> arrayboard = new ArrayList<String>();
-
+    public String doctor="";
+    public String hospital="";
+    SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+    Date time = new Date();
+    public String time1 = time+fuser;
+    public boolean request;
+    ProgressDialog pd1;
     public BotFragment(){}
+    private FirebaseFirestore db;
 
 
     @NonNull
@@ -60,6 +82,7 @@ public class BotFragment extends Fragment {
         arrayList = new ArrayList<>();
         botAdapter = new BotAdapter(arrayList);
         recyclerView.setAdapter(botAdapter);
+
 
         final Button button1 = (Button) view.findViewById(R.id.button1);
         final Button button2 = (Button) view.findViewById(R.id.button2);
@@ -77,11 +100,11 @@ public class BotFragment extends Fragment {
             }
         });
 
-
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Chatbot chatbot = new Chatbot(fuser, mcurrent);
+
                 switch (chatbot.getCurrent()) {
                     case "nmtest": {
                         mcurrent = "nmyes";
@@ -152,8 +175,12 @@ public class BotFragment extends Fragment {
                         boardcur.put("timestamp", new Timestamp(new Date()));
                         boardcur.put("name",user.getUsernm()+" 님");
                         boardcur.put("match",false);
+                        boardcur.put("request",false);
+                        boardcur.put("doctor","none");
+                        boardcur.put("hospital","none");
+                        boardcur.put("doctorid","none");
 
-                        FirebaseFirestore.getInstance().collection("Board").document().set(boardcur)
+                        FirebaseFirestore.getInstance().collection("Board").document(time1).set(boardcur)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -163,19 +190,39 @@ public class BotFragment extends Fragment {
                         break;
                     }
                     case "match":{
-                        ProgressDialog pd = ProgressDialog.show(getContext(), "", "매칭 중");
-                        pd.show();
+
+                        pd1 = ProgressDialog.show(getContext(), "", "매칭 중");
+
+                        DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document(time1);
+                        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                board = documentSnapshot.toObject(Board.class);
+
+                                assert board != null;
+                                doctor = board.getDoctor();
+                                hospital = board.getHospital();
+
+                                System.out.println(doctor);
+                                System.out.println(hospital);
+                            }
+                        });
+
+                        toDialog();
+
+                        break;
                     }
                     default: {
                         break;
                     }
                 }
+
                 chatbot = new Chatbot(fuser, ucurrent);
                 Chatbot chatbot1 = new Chatbot("bot", bcurrent);
                 arrayList.add(chatbot);
                 arrayList.add(chatbot1);
                 botAdapter.notifyDataSetChanged();
-                System.out.println(arrayboard);
+                recyclerView.scrollToPosition(arrayList.size()-1);
             }
         });
 
@@ -205,6 +252,31 @@ public class BotFragment extends Fragment {
 
         return view;
 
+    }
+
+    private void toDialog()
+    {
+        final DocumentReference docRef = db.getInstance().collection("Board").document(time1);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    return;
+                }
+
+                board = snapshot.toObject(Board.class);
+
+                request = board.isRequest();
+                System.out.println(request);
+
+                if(request) {
+                    pd1.dismiss();
+                    CustomDialog customDialog = new CustomDialog(getContext());
+                    customDialog.callFunction(doctor,hospital);
+                }
+            }
+        });
     }
 
 }

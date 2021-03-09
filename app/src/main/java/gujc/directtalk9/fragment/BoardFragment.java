@@ -154,7 +154,7 @@ public class BoardFragment extends Fragment {
                                         }
                                     });
 
-                                    documentSnapshot.getReference().update("match", true);
+                                    documentSnapshot.getReference().update("request", true);
                                     documentSnapshot.getReference().update("doctor", doctor);
                                     documentSnapshot.getReference().update("hospital", hospital);
 
