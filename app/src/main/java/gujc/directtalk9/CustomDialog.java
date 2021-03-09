@@ -10,13 +10,31 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import gujc.directtalk9.chat.ChatActivity;
+import gujc.directtalk9.model.Board;
+import gujc.directtalk9.model.Chatbot;
+import gujc.directtalk9.model.UserModel;
 
 public class CustomDialog extends Dialog{
 
     private Context context;
     String doctoruid="";
     String documentid="";
+    private Board board;
+
 
     public CustomDialog(Context context) {
         super(context);
@@ -53,6 +71,15 @@ public class CustomDialog extends Dialog{
                 intent.putExtra("toUid", doctoruid);
                 getContext().startActivity(intent);
                 dlg.dismiss();
+                DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document(documentid);
+                ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        board = documentSnapshot.toObject(Board.class);
+                        documentSnapshot.getReference().update("match",true);
+                    }
+                });
+
 
             }
         });
@@ -60,8 +87,14 @@ public class CustomDialog extends Dialog{
             @Override
             public void onClick(View view) {
 
-
-
+                DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document(documentid);
+                ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        board = documentSnapshot.toObject(Board.class);
+                        documentSnapshot.getReference().update("request",false);
+                    }
+                });
                 dlg.dismiss();
             }
         });

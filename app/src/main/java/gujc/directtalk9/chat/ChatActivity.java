@@ -1,5 +1,6 @@
 package gujc.directtalk9.chat;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.Gravity;
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import gujc.directtalk9.LoginActivity;
+import gujc.directtalk9.MainActivity;
 import gujc.directtalk9.R;
 import gujc.directtalk9.fragment.ChatFragment;
 import gujc.directtalk9.fragment.UserListInRoomFragment;
@@ -79,6 +82,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         chatFragment.backPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
         finish();;
     }
 

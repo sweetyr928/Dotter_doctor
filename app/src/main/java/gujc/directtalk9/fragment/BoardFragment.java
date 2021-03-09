@@ -110,6 +110,16 @@ public class BoardFragment extends Fragment {
             final DocumentSnapshot documentSnapshot = getSnapshot(position);
             final Board board = documentSnapshot.toObject(Board.class);
 
+            DocumentReference ref = FirebaseFirestore.getInstance().collection("users").document(fuser);
+            ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    user = documentSnapshot.toObject(UserModel.class);
+                    doctor = user.getUsernm();
+                    hospital = user.getUsermsg();
+                }
+            });
+
             if (board.isMatch()) {
                 viewHolder.itemView.setVisibility(View.GONE);
                 viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
@@ -143,21 +153,10 @@ public class BoardFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int which)
                                 {
 
-
-                                    DocumentReference ref = FirebaseFirestore.getInstance().collection("users").document(fuser);
-                                    ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            user = documentSnapshot.toObject(UserModel.class);
-                                            doctor = user.getUsernm();
-                                            hospital = user.getUsermsg();
-                                        }
-                                    });
-
-                                    documentSnapshot.getReference().update("request", true);
                                     documentSnapshot.getReference().update("doctor", doctor);
                                     documentSnapshot.getReference().update("hospital", hospital);
                                     documentSnapshot.getReference().update("doctorid", fuser);
+                                    documentSnapshot.getReference().update("request", true);
 
                                     Intent intent = new Intent(getView().getContext(), ChatActivity.class);
                                     intent.putExtra("toUid", board.getId());
