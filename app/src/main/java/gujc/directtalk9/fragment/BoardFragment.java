@@ -157,6 +157,7 @@ public class BoardFragment extends Fragment {
                                     documentSnapshot.getReference().update("request", true);
                                     documentSnapshot.getReference().update("doctor", doctor);
                                     documentSnapshot.getReference().update("hospital", hospital);
+                                    documentSnapshot.getReference().update("doctorid", fuser);
 
                                     Intent intent = new Intent(getView().getContext(), ChatActivity.class);
                                     intent.putExtra("toUid", board.getId());

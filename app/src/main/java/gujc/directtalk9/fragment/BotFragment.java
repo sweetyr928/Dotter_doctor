@@ -60,6 +60,7 @@ public class BotFragment extends Fragment {
     private String bcurrent = "";
     private List<String> arrayboard = new ArrayList<String>();
     public String doctor="";
+    public String doctorid="";
     public String hospital="";
     SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
     Date time = new Date();
@@ -168,6 +169,11 @@ public class BotFragment extends Fragment {
                         button2.setVisibility(View.GONE);
                         button3.setVisibility(View.GONE);
                         button4.setVisibility(View.GONE);
+
+                        break;
+                    }
+                    case "match":{
+
                         String strboard = String.valueOf(arrayboard);
                         Map<String,Object> boardcur = new HashMap<>();
                         boardcur.put("title",strboard);
@@ -187,27 +193,8 @@ public class BotFragment extends Fragment {
 
                                     }
                                 });
-                        break;
-                    }
-                    case "match":{
 
                         pd1 = ProgressDialog.show(getContext(), "", "매칭 중");
-
-                        DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document(time1);
-                        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                board = documentSnapshot.toObject(Board.class);
-
-                                assert board != null;
-                                doctor = board.getDoctor();
-                                hospital = board.getHospital();
-
-                                System.out.println(doctor);
-                                System.out.println(hospital);
-                            }
-                        });
-
                         toDialog();
 
                         break;
@@ -267,13 +254,19 @@ public class BotFragment extends Fragment {
 
                 board = snapshot.toObject(Board.class);
 
+                doctor = board.getDoctor();
+                hospital = board.getHospital();
                 request = board.isRequest();
-                System.out.println(request);
+                doctorid = board.getDoctorid();
+
+                System.out.println(doctor);
+                System.out.println(hospital);
+                System.out.println(doctorid);
 
                 if(request) {
                     pd1.dismiss();
                     CustomDialog customDialog = new CustomDialog(getContext());
-                    customDialog.callFunction(doctor,hospital);
+                    customDialog.callFunction(time1,doctor,hospital,doctorid);
                 }
             }
         });
