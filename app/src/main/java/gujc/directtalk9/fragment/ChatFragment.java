@@ -211,7 +211,7 @@ public class ChatFragment extends Fragment {
         //문진요약
         TextView btitle = view.findViewById(R.id.btitle);
         final TextView bresult = view.findViewById(R.id.bresult);
-        bresult.setText("toTitle");
+        bresult.setText(toTitle);
         bresult.bringToFront();
 
         btitle.setOnClickListener(new View.OnClickListener() {
