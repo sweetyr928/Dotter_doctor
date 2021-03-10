@@ -95,6 +95,7 @@ public class CustomDialog extends Dialog{
                         documentSnapshot.getReference().update("request",false);
                     }
                 });
+                Toast.makeText(getContext(),"의사 매칭하기 버튼을 다시 눌러주세요!",Toast.LENGTH_LONG).show();
                 dlg.dismiss();
             }
         });

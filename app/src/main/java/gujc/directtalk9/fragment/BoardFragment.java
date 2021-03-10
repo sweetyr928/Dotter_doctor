@@ -165,14 +165,8 @@ public class BoardFragment extends Fragment {
                                 }
                             })
                             .setCancelable(false) // 백버튼으로 팝업창이 닫히지 않도록 한다.
-
-
                             .show();
 
-                    /*Intent intent = new Intent(getView().getContext(), ChatActivity.class);
-                    intent.putExtra("toUid", board.getId());
-                    intent.putExtra("title",board.getTitle());
-                    startActivity(intent);*/
                 }
             }); //누르면 채팅
         }
