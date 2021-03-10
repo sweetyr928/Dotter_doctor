@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,12 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,17 +55,14 @@ public class BotFragment extends Fragment {
     private String ucurrent = "";
     private String bcurrent = "";
     private List<String> arrayboard = new ArrayList<String>();
-    public String doctor="";
-    public String hospital="";
-
-    public String doctor="";
-    public String doctorid="";
-    public String hospital="";
-    SimpleDateFormat format1 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
-    Date time = new Date();
-    public String time1 = time+fuser;
-    public boolean request;
+    private String doctor="";
+    private String doctorid="";
+    private String hospital="";
+    public String roomid;
+    private FirebaseFirestore firebase= FirebaseFirestore.getInstance();
+    private boolean request;
     ProgressDialog pd1;
+
     public BotFragment(){}
     private FirebaseFirestore db;
 
@@ -165,7 +167,8 @@ public class BotFragment extends Fragment {
                         break;
                     }
                     case "match":{
-
+                        roomid = firebase.collection("Board").document().getId();
+                        CreateBoard(firebase.collection("Board").document(roomid));
                         String strboard = String.valueOf(arrayboard);
                         Map<String,Object> boardcur = new HashMap<>();
                         boardcur.put("title",strboard);
@@ -178,7 +181,8 @@ public class BotFragment extends Fragment {
                         boardcur.put("hospital","none");
                         boardcur.put("doctorid","none");
 
-                        FirebaseFirestore.getInstance().collection("Board").document(time1).set(boardcur)
+
+                        firebase.collection("Board").document(roomid).set(boardcur)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -189,32 +193,6 @@ public class BotFragment extends Fragment {
                         pd1 = ProgressDialog.show(getContext(), "", "매칭 중");
                         toDialog();
 
-                        break;
-                    }
-                    case "match":{
-
-//                        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                            @Override
-//                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                                board = documentSnapshot.toObject(Board.class);
-//                                doctor = board.getDoctor();
-//                                hospital = board.getHospital();
-//                            }
-//                        });
-                        System.out.println(doctor);
-                        System.out.println(hospital);
-
-                        ProgressDialog pd1 = ProgressDialog.show(getContext(), "", "매칭 중");
-                        pd1.show();
-
-                        /*if (board.isRequest()) {
-                            pd1.dismiss();
-                            CustomDialog customDialog = new CustomDialog(getContext());
-                            customDialog.callFunction(doctor,hospital);
-                        }
-                        else {
-                            pd1.show();
-                        }*/
                         break;
                     }
                     default: {
@@ -259,9 +237,20 @@ public class BotFragment extends Fragment {
 
     }
 
+    public void CreateBoard(final DocumentReference room) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("id", null);
+
+        room.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+            }
+        });
+    }
+
     private void toDialog()
     {
-        final DocumentReference docRef = db.getInstance().collection("Board").document(time1);
+        final DocumentReference docRef = db.getInstance().collection("Board").document(roomid);
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -284,7 +273,7 @@ public class BotFragment extends Fragment {
                 if(request) {
                     pd1.dismiss();
                     CustomDialog customDialog = new CustomDialog(getContext());
-                    customDialog.callFunction(time1,doctor,hospital,doctorid);
+                    customDialog.callFunction(roomid,doctor,hospital,doctorid);
                 }
             }
         });

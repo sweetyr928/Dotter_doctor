@@ -204,6 +204,27 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        TextView btitle = view.findViewById(R.id.btitle);
+        final TextView bresult = view.findViewById(R.id.bresult);
+        btitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(bresult.getVisibility() == View.GONE){
+                    bresult.setVisibility(View.VISIBLE);
+                }else{
+                    bresult.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        firestore.collection("rooms").document(roomID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot doc = task.getResult();
+                bresult.setText(doc.getString("board"));
+            }
+        });
+
         return view;
     }
 
