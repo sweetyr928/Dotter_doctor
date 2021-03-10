@@ -116,7 +116,6 @@ public class ChatFragment extends Fragment {
 
     private ProgressDialog progressDialog = null;
     private Integer userCount = 0;
-    BotFragment botFragment;
     public String broomid;
 
     public ChatFragment() {
@@ -161,8 +160,6 @@ public class ChatFragment extends Fragment {
             toUid = getArguments().getString("toUid");
             toTitle = getArguments().getString("toTitle");
         }
-
-        System.out.println(toTitle);
 
         firestore = FirebaseFirestore.getInstance();
         storageReference  = FirebaseStorage.getInstance().getReference();
@@ -211,10 +208,12 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        //문진요약
         TextView btitle = view.findViewById(R.id.btitle);
         final TextView bresult = view.findViewById(R.id.bresult);
-
         bresult.setText(toTitle);
+        bresult.bringToFront();
+
         btitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -223,17 +222,9 @@ public class ChatFragment extends Fragment {
                 }else{
                     bresult.setVisibility(View.GONE);
                 }
+                System.out.println(bresult.getVisibility());
             }
         });
-        System.out.println(broomid);
-
-//        firestore.collection("rooms").document(roomID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                DocumentSnapshot doc = task.getResult();
-//                bresult.setText(doc.getString("board"));
-//            }
-//        });
 
         return view;
     }

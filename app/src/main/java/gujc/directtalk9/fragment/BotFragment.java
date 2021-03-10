@@ -26,22 +26,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import gujc.directtalk9.CustomDialog;
-import gujc.directtalk9.MainActivity;
 import gujc.directtalk9.R;
 import gujc.directtalk9.bot.BotAdapter;
 import gujc.directtalk9.model.Board;
 import gujc.directtalk9.model.Chatbot;
 import gujc.directtalk9.model.UserModel;
-
-import static android.content.ContentValues.TAG;
-
 
 public class BotFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -65,8 +60,6 @@ public class BotFragment extends Fragment {
     ProgressDialog pd1;
 
     public BotFragment(){}
-    private FirebaseFirestore db;
-
 
     @NonNull
     @Override
@@ -251,7 +244,7 @@ public class BotFragment extends Fragment {
 
     private void toDialog()
     {
-        final DocumentReference docRef = db.getInstance().collection("Board").document(roomid);
+        final DocumentReference docRef = firebase.collection("Board").document(roomid);
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -267,11 +260,6 @@ public class BotFragment extends Fragment {
                 request = board.isRequest();
                 doctorid = board.getDoctorid();
                 title = board.getTitle();
-
-                System.out.println(doctor);
-                System.out.println(hospital);
-                System.out.println(doctorid);
-                System.out.println(title);
 
                 if(request) {
                     pd1.dismiss();
