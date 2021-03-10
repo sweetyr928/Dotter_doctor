@@ -116,6 +116,8 @@ public class ChatFragment extends Fragment {
 
     private ProgressDialog progressDialog = null;
     private Integer userCount = 0;
+    BotFragment botFragment;
+    public String broomid;
 
     public ChatFragment() {
     }
@@ -223,6 +225,7 @@ public class ChatFragment extends Fragment {
                 }
             }
         });
+        System.out.println(broomid);
 
 //        firestore.collection("rooms").document(roomID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //            @Override
