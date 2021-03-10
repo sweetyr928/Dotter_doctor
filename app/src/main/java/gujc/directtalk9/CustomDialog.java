@@ -70,6 +70,7 @@ public class CustomDialog extends Dialog{
                 Intent intent = new Intent(getContext(), ChatActivity.class);
                 intent.putExtra("toUid", doctoruid);
                 getContext().startActivity(intent);
+                Toast.makeText(getContext(),"채팅방에 입장하였습니다!",Toast.LENGTH_LONG).show();
                 dlg.dismiss();
                 DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document(documentid);
                 ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
