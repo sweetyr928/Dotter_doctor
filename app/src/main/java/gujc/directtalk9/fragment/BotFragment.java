@@ -174,7 +174,7 @@ public class BotFragment extends Fragment {
                         boardcur.put("doctor","none");
                         boardcur.put("hospital","none");
                         boardcur.put("doctorid","none");
-
+                        boardcur.put("status",1);
 
                         firebase.collection("Board").document(roomid).set(boardcur)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {

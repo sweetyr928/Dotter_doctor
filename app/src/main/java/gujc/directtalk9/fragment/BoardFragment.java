@@ -1,5 +1,6 @@
 package gujc.directtalk9.fragment;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 
 import android.content.Intent;
@@ -22,6 +23,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
+import gujc.directtalk9.CustomDialog;
 import gujc.directtalk9.R;
 import gujc.directtalk9.chat.ChatActivity;
 import gujc.directtalk9.common.FirestoreAdapter;
@@ -33,7 +35,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -47,6 +51,10 @@ public class BoardFragment extends Fragment {
     private UserModel user;
     public String doctor="";
     public String hospital="";
+    ProgressDialog pd;
+    private FirebaseFirestore db;
+    private Board board;
+    public String boardid="";
 
     public BoardFragment() {
     }
@@ -109,6 +117,7 @@ public class BoardFragment extends Fragment {
         public void onBindViewHolder(BoardFragment.CustomViewHolder viewHolder, int position) {
             final DocumentSnapshot documentSnapshot = getSnapshot(position);
             final Board board = documentSnapshot.toObject(Board.class);
+            boardid = documentSnapshot.getId();
 
             DocumentReference ref = FirebaseFirestore.getInstance().collection("users").document(fuser);
             ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -120,7 +129,8 @@ public class BoardFragment extends Fragment {
                 }
             });
 
-            if (board.isMatch()) {
+            assert board != null;
+            if (board.isMatch() || board.getStatus()==2) {
                 viewHolder.itemView.setVisibility(View.GONE);
                 viewHolder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
             }
@@ -137,7 +147,7 @@ public class BoardFragment extends Fragment {
                     AlertDialog.Builder oDialog = new AlertDialog.Builder(getContext(),
                             android.R.style.Theme_DeviceDefault_Light_Dialog);
 
-                    oDialog.setMessage("채팅을 시작하시겠습니까?")
+                    oDialog.setMessage("매칭을 요청하시겠습니까?")
                             .setTitle("          알림")
                             .setPositiveButton("아니오", new DialogInterface.OnClickListener()
                             {
@@ -158,10 +168,9 @@ public class BoardFragment extends Fragment {
                                     documentSnapshot.getReference().update("doctorid", fuser);
                                     documentSnapshot.getReference().update("request", true);
 
-                                    Intent intent = new Intent(getView().getContext(), ChatActivity.class);
-                                    intent.putExtra("toUid", board.getId());
-                                    intent.putExtra("toTitle",board.getTitle());
-                                    startActivity(intent);
+                                    pd = ProgressDialog.show(getContext(), "", "매칭수락을 기다리는 중 입니다...");
+                                    toMatch(boardid);
+
                                 }
                             })
                             .setCancelable(false) // 백버튼으로 팝업창이 닫히지 않도록 한다.
@@ -185,5 +194,37 @@ public class BoardFragment extends Fragment {
         }
     }
 
-}
+    private void toMatch(String bid)
+    {
+        final DocumentReference docRef = db.getInstance().collection("Board").document(bid);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    return;
+                }
 
+                board = snapshot.toObject(Board.class);
+
+                int status = board.getStatus();
+                System.out.println(status);
+
+                if (status==3&&board.isMatch()){
+                    pd.dismiss();
+                    Intent intent = new Intent(getView().getContext(), ChatActivity.class);
+                    intent.putExtra("toUid", board.getId());
+                    intent.putExtra("toTitle",board.getTitle());
+                    startActivity(intent);
+                    Toast.makeText(getContext(), "매칭이 수락되었습니다.", Toast.LENGTH_LONG).show();
+                }
+                else if(status==2&& !board.isMatch()){
+                    pd.dismiss();
+                    Toast.makeText(getContext(), "매칭이 거절되었습니다.", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+    }
+
+}

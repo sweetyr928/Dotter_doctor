@@ -12,6 +12,11 @@ public class Board {
     public String doctor;
     public String hospital;
     public String doctorid;
+    public int status; // 1: 등록 2: 매칭 대기 중 3: 매칭 성공
+
+    public int getStatus() { return status;}
+
+    public void setStatus(int status) { this.status = status;}
 
     public boolean isRequest() { return request;}
 
