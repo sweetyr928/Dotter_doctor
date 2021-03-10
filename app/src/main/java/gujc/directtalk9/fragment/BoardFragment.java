@@ -160,7 +160,7 @@ public class BoardFragment extends Fragment {
 
                                     Intent intent = new Intent(getView().getContext(), ChatActivity.class);
                                     intent.putExtra("toUid", board.getId());
-                                    intent.putExtra("title",board.getTitle());
+                                    intent.putExtra("toTitle",board.getTitle());
                                     startActivity(intent);
                                 }
                             })

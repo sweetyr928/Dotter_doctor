@@ -106,6 +106,7 @@ public class ChatFragment extends Fragment {
     private String roomID;
     private String myUid;
     private String toUid;
+    private String toTitle;
     private Map<String, UserModel> userList = new HashMap<>();
 
     private ListenerRegistration listenerRegistration;
@@ -119,11 +120,12 @@ public class ChatFragment extends Fragment {
     public ChatFragment() {
     }
 
-    public static final ChatFragment getInstance(String toUid, String roomID) {
+    public static final ChatFragment getInstance(String toUid, String roomID,String toTitle) {
         ChatFragment f = new ChatFragment();
         Bundle bdl = new Bundle();
         bdl.putString("toUid", toUid);
         bdl.putString("roomID", roomID);
+        bdl.putString("toTitle", toTitle);
         f.setArguments(bdl);
         return f;
     }
@@ -155,7 +157,10 @@ public class ChatFragment extends Fragment {
         if (getArguments() != null) {
             roomID = getArguments().getString("roomID");
             toUid = getArguments().getString("toUid");
+            toTitle = getArguments().getString("toTitle");
         }
+
+        System.out.println(toTitle);
 
         firestore = FirebaseFirestore.getInstance();
         storageReference  = FirebaseStorage.getInstance().getReference();
@@ -206,6 +211,8 @@ public class ChatFragment extends Fragment {
 
         TextView btitle = view.findViewById(R.id.btitle);
         final TextView bresult = view.findViewById(R.id.bresult);
+
+        bresult.setText(toTitle);
         btitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -217,13 +224,13 @@ public class ChatFragment extends Fragment {
             }
         });
 
-        firestore.collection("rooms").document(roomID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot doc = task.getResult();
-                bresult.setText(doc.getString("board"));
-            }
-        });
+//        firestore.collection("rooms").document(roomID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                DocumentSnapshot doc = task.getResult();
+//                bresult.setText(doc.getString("board"));
+//            }
+//        });
 
         return view;
     }
