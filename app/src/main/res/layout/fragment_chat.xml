@@ -3,7 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorWhite">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +24,7 @@
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1000">
         <TextView
             android:id="@+id/bresult"
@@ -31,7 +32,8 @@
             android:layout_height="150dp"
             android:scaleType="centerCrop"
             android:text="요오오오약"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:background="@color/colorWhite"/>
 
 
         <androidx.recyclerview.widget.RecyclerView
