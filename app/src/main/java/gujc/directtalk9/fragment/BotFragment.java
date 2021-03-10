@@ -181,7 +181,7 @@ public class BotFragment extends Fragment {
                         boardcur.put("doctor","none");
                         boardcur.put("hospital","none");
                         boardcur.put("doctorid","none");
-
+                        boardcur.put("status",1);
 
                         firebase.collection("Board").document(roomid).set(boardcur)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -267,11 +267,6 @@ public class BotFragment extends Fragment {
                 request = board.isRequest();
                 doctorid = board.getDoctorid();
                 title = board.getTitle();
-
-                System.out.println(doctor);
-                System.out.println(hospital);
-                System.out.println(doctorid);
-                System.out.println(title);
 
                 if(request) {
                     pd1.dismiss();

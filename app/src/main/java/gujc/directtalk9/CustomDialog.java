@@ -81,6 +81,7 @@ public class CustomDialog extends Dialog{
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         board = documentSnapshot.toObject(Board.class);
                         documentSnapshot.getReference().update("match",true);
+                        documentSnapshot.getReference().update("status",3);
                     }
                 });
 
@@ -97,6 +98,7 @@ public class CustomDialog extends Dialog{
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         board = documentSnapshot.toObject(Board.class);
                         documentSnapshot.getReference().update("request",false);
+                        documentSnapshot.getReference().update("status",2);
                     }
                 });
                 Toast.makeText(getContext(),"의사 매칭하기 버튼을 다시 눌러주세요!",Toast.LENGTH_LONG).show();
