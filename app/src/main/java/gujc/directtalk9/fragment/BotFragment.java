@@ -153,6 +153,8 @@ public class BotFragment extends Fragment {
                         break;
                     }
                     case "cyes": {
+                        ucurrent = null;
+                        bcurrent = null;
                         mcurrent = "match";
                         button1.setText("의사 매칭하기");
                         button2.setVisibility(View.GONE);
@@ -185,7 +187,7 @@ public class BotFragment extends Fragment {
                                     }
                                 });
 
-                        broomid.setBroomid(roomid);
+//                        broomid.setBroomid(roomid);
 
                         pd1 = ProgressDialog.show(getContext(), "", "매칭 중");
                         toDialog();

@@ -208,7 +208,6 @@ public class BoardFragment extends Fragment {
                 board = snapshot.toObject(Board.class);
 
                 int status = board.getStatus();
-                System.out.println(status);
 
                 if (status==3&&board.isMatch()){
                     pd.dismiss();

@@ -118,17 +118,17 @@ public class ChatFragment extends Fragment {
 
     private ProgressDialog progressDialog = null;
     private Integer userCount = 0;
-    private String broomid = null;
+    private String broomid;
 
     public ChatFragment() {
     }
 
-    public String getBroomid(){
-        return broomid;
-    }
-    public void setBroomid(String broomid){
-        this.broomid = broomid;
-    }
+//    public String getBroomid(){
+//        return broomid;
+//    }
+//    public void setBroomid(String broomid){
+//        this.broomid = broomid;
+//    }
 
 
     public static final ChatFragment getInstance(String toUid, String roomID,String toTitle) {
@@ -221,14 +221,16 @@ public class ChatFragment extends Fragment {
         //문진요약
         TextView btitle = view.findViewById(R.id.btitle);
         final TextView bresult = view.findViewById(R.id.bresult);
-        firestore.collection("rooms").document(roomID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                ChatRoomModel board = documentSnapshot.toObject(ChatRoomModel.class);
-                String board2 = board.getBoard();
-                bresult.setText(board2);
-            }
-        });
+        System.out.println("room"+broomid);
+//        firestore.collection("rooms").document(roomID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                ChatRoomModel board = documentSnapshot.toObject(ChatRoomModel.class);
+//                String board2 = board.getBoard();
+//
+//            }
+//        });
+        bresult.setText("board2");
         bresult.bringToFront();
 
         btitle.setOnClickListener(new View.OnClickListener() {
