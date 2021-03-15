@@ -8,6 +8,7 @@ public class ChatRoomModel {
     private String lastDatetime;
     private Integer userCount;
     private Integer unreadCount;
+    private String board;
 
     public String getRoomID() {
         return roomID;
@@ -63,5 +64,14 @@ public class ChatRoomModel {
 
     public void setUnreadCount(Integer unreadCount) {
         this.unreadCount = unreadCount;
+    }
+
+
+    public String getBoard() {
+        return board;
+    }
+
+    public void setBoard(String board) {
+        this.board = board;
     }
 }
