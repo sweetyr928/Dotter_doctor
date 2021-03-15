@@ -145,7 +145,7 @@ public class BotFragment extends Fragment {
                     }
                     case "card": {
                         mcurrent = "cyes";
-                        ucurrent = null;
+                        ucurrent = "";
                         bcurrent = "이카드로 진행할까요?";
                         button1.setText("yes");
                         button2.setText("no");
@@ -153,7 +153,8 @@ public class BotFragment extends Fragment {
                         break;
                     }
                     case "cyes": {
-                        bcurrent = "매칭시작";
+                        ucurrent = "";
+                        bcurrent = "매칭시작을 눌러주세요";
                         mcurrent = "match";
                         button1.setText("의사 매칭하기");
                         button2.setVisibility(View.GONE);
@@ -197,25 +198,27 @@ public class BotFragment extends Fragment {
                         break;
                     }
                 }
-//                if(ucurrent.equals(null)){
-//                    Chatbot chatbot1 = new Chatbot("bot", bcurrent);
-//                    arrayList.add(chatbot1);
-//                    botAdapter.notifyDataSetChanged();
-//                    recyclerView.scrollToPosition(arrayList.size()-1);
-//                }else
-//                if (bcurrent.equals(null)){
-//                    chatbot = new Chatbot(fuser, ucurrent);
-//                    arrayList.add(chatbot);
-//                    botAdapter.notifyDataSetChanged();
-//                    recyclerView.scrollToPosition(arrayList.size()-1);
-//                }else{
+                if(ucurrent.equals("")){
+                    chatbot = new Chatbot(fuser, ucurrent);
+                    Chatbot chatbot1 = new Chatbot("bot", bcurrent);
+                    arrayList.add(chatbot1);
+                    botAdapter.notifyDataSetChanged();
+                    recyclerView.scrollToPosition(arrayList.size()-1);
+                }else
+                if (bcurrent.equals("")){
+                    chatbot = new Chatbot(fuser, ucurrent);
+                    Chatbot chatbot1 = new Chatbot("bot", bcurrent);
+                    arrayList.add(chatbot);
+                    botAdapter.notifyDataSetChanged();
+                    recyclerView.scrollToPosition(arrayList.size()-1);
+                }else{
                     chatbot = new Chatbot(fuser, ucurrent);
                     Chatbot chatbot1 = new Chatbot("bot", bcurrent);
                     arrayList.add(chatbot);
                     arrayList.add(chatbot1);
                     botAdapter.notifyDataSetChanged();
                     recyclerView.scrollToPosition(arrayList.size()-1);
-//                }
+                }
 
 
             }
