@@ -75,7 +75,9 @@ import java.util.TimeZone;
 import gujc.directtalk9.MainActivity;
 import gujc.directtalk9.R;
 import gujc.directtalk9.common.Util9;
+import gujc.directtalk9.model.Board;
 import gujc.directtalk9.model.ChatModel;
+import gujc.directtalk9.model.ChatRoomModel;
 import gujc.directtalk9.model.Message;
 import gujc.directtalk9.model.NotificationModel;
 import gujc.directtalk9.model.UserModel;
@@ -116,10 +118,18 @@ public class ChatFragment extends Fragment {
 
     private ProgressDialog progressDialog = null;
     private Integer userCount = 0;
-    public String broomid;
+    private String broomid = null;
 
     public ChatFragment() {
     }
+
+    public String getBroomid(){
+        return broomid;
+    }
+    public void setBroomid(String broomid){
+        this.broomid = broomid;
+    }
+
 
     public static final ChatFragment getInstance(String toUid, String roomID,String toTitle) {
         ChatFragment f = new ChatFragment();
@@ -211,7 +221,14 @@ public class ChatFragment extends Fragment {
         //문진요약
         TextView btitle = view.findViewById(R.id.btitle);
         final TextView bresult = view.findViewById(R.id.bresult);
-        bresult.setText(toTitle);
+        firestore.collection("rooms").document(roomID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                ChatRoomModel board = documentSnapshot.toObject(ChatRoomModel.class);
+                String board2 = board.getBoard();
+                bresult.setText(board2);
+            }
+        });
         bresult.bringToFront();
 
         btitle.setOnClickListener(new View.OnClickListener() {
@@ -222,7 +239,6 @@ public class ChatFragment extends Fragment {
                 }else{
                     bresult.setVisibility(View.GONE);
                 }
-                System.out.println(bresult.getVisibility());
             }
         });
 
@@ -316,6 +332,7 @@ public class ChatFragment extends Fragment {
         Map<String, Object> data = new HashMap<>();
         data.put("title", null);
         data.put("users", users);
+        data.put("board",toTitle);
 
         room.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
