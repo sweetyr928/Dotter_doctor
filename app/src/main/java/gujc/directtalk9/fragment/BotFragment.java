@@ -197,25 +197,25 @@ public class BotFragment extends Fragment {
                         break;
                     }
                 }
-                if(ucurrent.equals(null)){
+//                if(ucurrent.equals(null)){
+//                    Chatbot chatbot1 = new Chatbot("bot", bcurrent);
+//                    arrayList.add(chatbot1);
+//                    botAdapter.notifyDataSetChanged();
+//                    recyclerView.scrollToPosition(arrayList.size()-1);
+//                }else
+//                if (bcurrent.equals(null)){
+//                    chatbot = new Chatbot(fuser, ucurrent);
+//                    arrayList.add(chatbot);
+//                    botAdapter.notifyDataSetChanged();
+//                    recyclerView.scrollToPosition(arrayList.size()-1);
+//                }else{
+                    chatbot = new Chatbot(fuser, ucurrent);
                     Chatbot chatbot1 = new Chatbot("bot", bcurrent);
+                    arrayList.add(chatbot);
                     arrayList.add(chatbot1);
                     botAdapter.notifyDataSetChanged();
                     recyclerView.scrollToPosition(arrayList.size()-1);
-                }else
-                if (bcurrent.equals(null)){
-                    chatbot = new Chatbot(fuser, ucurrent);
-                    arrayList.add(chatbot);
-                    botAdapter.notifyDataSetChanged();
-                    recyclerView.scrollToPosition(arrayList.size()-1);
-                }else{
-                    chatbot = new Chatbot(fuser, ucurrent);
-                    Chatbot chatbot1 = new Chatbot("bot", bcurrent);
-                    arrayList.add(chatbot);
-                    arrayList.add(chatbot1);
-                    botAdapter.notifyDataSetChanged();
-                    recyclerView.scrollToPosition(arrayList.size()-1);
-                }
+//                }
 
 
             }
