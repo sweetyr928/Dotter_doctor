@@ -24,6 +24,7 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import gujc.directtalk9.chat.ChatActivity;
+import gujc.directtalk9.fragment.ChatFragment;
 import gujc.directtalk9.model.Board;
 import gujc.directtalk9.model.Chatbot;
 import gujc.directtalk9.model.UserModel;

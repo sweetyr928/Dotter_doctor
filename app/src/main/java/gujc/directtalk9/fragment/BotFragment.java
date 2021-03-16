@@ -57,7 +57,6 @@ public class BotFragment extends Fragment {
     public String roomid;
     private FirebaseFirestore firebase= FirebaseFirestore.getInstance();
     private boolean request;
-    ChatFragment broomid = new ChatFragment();
     ProgressDialog pd1;
 
     public BotFragment(){}
@@ -186,8 +185,6 @@ public class BotFragment extends Fragment {
 
                                     }
                                 });
-
-//                        broomid.setBroomid(roomid);
 
                         pd1 = ProgressDialog.show(getContext(), "", "매칭 중");
                         toDialog();

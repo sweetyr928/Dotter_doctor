@@ -194,7 +194,7 @@ public class BoardFragment extends Fragment {
         }
     }
 
-    private void toMatch(String bid)
+    private void toMatch(final String bid)
     {
         final DocumentReference docRef = db.getInstance().collection("Board").document(bid);
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -213,6 +213,7 @@ public class BoardFragment extends Fragment {
                     pd.dismiss();
                     Intent intent = new Intent(getView().getContext(), ChatActivity.class);
                     intent.putExtra("toUid", board.getId());
+                    intent.putExtra("roomID", bid);
                     intent.putExtra("toTitle",board.getTitle());
                     startActivity(intent);
                     Toast.makeText(getContext(), "매칭이 수락되었습니다.", Toast.LENGTH_LONG).show();

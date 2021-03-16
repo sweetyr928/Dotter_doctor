@@ -72,10 +72,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import gujc.directtalk9.MainActivity;
 import gujc.directtalk9.R;
 import gujc.directtalk9.common.Util9;
-import gujc.directtalk9.model.Board;
 import gujc.directtalk9.model.ChatModel;
 import gujc.directtalk9.model.ChatRoomModel;
 import gujc.directtalk9.model.Message;
@@ -118,17 +116,12 @@ public class ChatFragment extends Fragment {
 
     private ProgressDialog progressDialog = null;
     private Integer userCount = 0;
-    private String broomid;
+
+    String bid;
 
     public ChatFragment() {
     }
 
-//    public String getBroomid(){
-//        return broomid;
-//    }
-//    public void setBroomid(String broomid){
-//        this.broomid = broomid;
-//    }
 
 
     public static final ChatFragment getInstance(String toUid, String roomID,String toTitle) {
@@ -217,11 +210,38 @@ public class ChatFragment extends Fragment {
                 }
             }
         });
+        DocumentReference rooms = firestore.collection("rooms").document(roomID);
+
+//        rooms.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                for (QueryDocumentSnapshot doc : task.getResult()){
+//                if(firestore.collection("rooms").document()!=roomID) {
+//                    CreateChattingRoom(firestore.collection("rooms").document(roomID));
+//                    System.out.println(roomID);
+//                }
+//                }
+//            }
+//        });
+
+        rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()) {
+                    documentSnapshot.getData();
+                    System.out.println("exists");
+                }else{
+                    CreateChattingRoom(firestore.collection("rooms").document(roomID));
+                    System.out.println("create chat");
+                }
+            }
+        });
+
 
         //문진요약
         TextView btitle = view.findViewById(R.id.btitle);
         final TextView bresult = view.findViewById(R.id.bresult);
-        firestore.collection("rooms").document(roomID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 ChatRoomModel board = documentSnapshot.toObject(ChatRoomModel.class);
@@ -232,7 +252,6 @@ public class ChatFragment extends Fragment {
         });
 
         bresult.bringToFront();
-
         btitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -328,8 +347,15 @@ public class ChatFragment extends Fragment {
     public void CreateChattingRoom(final DocumentReference room) {
         Map<String, Integer> users = new HashMap<>();
         String title = "";
-        for( String key : userList.keySet() ){
-            users.put(key, 0);
+        if(userList==null) {
+            for (String key : userList.keySet()) {
+                users.put(key, 0);
+                System.out.println(userList);
+            }
+        }else {
+            System.out.println(myUid + toUid);
+            users.put(myUid, 0);
+            users.put(toUid, 0);
         }
         Map<String, Object> data = new HashMap<>();
         data.put("title", null);
@@ -364,7 +390,7 @@ public class ChatFragment extends Fragment {
 
         if (roomID==null) {             // create chatting room for two user
             roomID = firestore.collection("rooms").document().getId();
-            CreateChattingRoom( firestore.collection("rooms").document(roomID) );
+            CreateChattingRoom( firestore.collection("rooms").document(roomID));
         }
 
         final Map<String,Object> messages = new HashMap<>();
@@ -416,6 +442,7 @@ public class ChatFragment extends Fragment {
         });
     };
 
+    //gcm??
     void sendGCM(){
         Gson gson = new Gson();
         NotificationModel notificationModel = new NotificationModel();
