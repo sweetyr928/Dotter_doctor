@@ -32,6 +32,7 @@ import gujc.directtalk9.model.Chatbot;
 import gujc.directtalk9.model.UserModel;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -55,6 +56,7 @@ public class BoardFragment extends Fragment {
     private FirebaseFirestore db;
     private Board board;
     public String boardid="";
+    RecyclerView recyclerView;
 
     public BoardFragment() {
     }
@@ -82,7 +84,7 @@ public class BoardFragment extends Fragment {
 
         firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp")); // orderby 추가해야함
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+        recyclerView = view.findViewById(R.id.recyclerview);
         //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setReverseLayout(true);
@@ -91,9 +93,22 @@ public class BoardFragment extends Fragment {
         //LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
         //linearSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(firestoreAdapter);
-
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refresh();
+            }
+        });
 
         return view;
+    }
+
+    public void refresh()
+    {
+        //recyclerView.setAdapter(firestoreAdapter);
+        firestoreAdapter.notifyDataSetChanged();
+        Toast.makeText(getContext(), "새로고침", Toast.LENGTH_SHORT).show();
     }
 
     class RecyclerViewAdapter extends FirestoreAdapter<CustomViewHolder> {
