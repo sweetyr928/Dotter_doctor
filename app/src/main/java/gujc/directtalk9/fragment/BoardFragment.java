@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -58,6 +59,7 @@ public class BoardFragment extends Fragment {
     private FirebaseFirestore db;
     private Board board;
     public String boardid="";
+    RecyclerView recyclerView;
 
     public BoardFragment() {
     }
@@ -86,15 +88,15 @@ public class BoardFragment extends Fragment {
 
         firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp")); // orderby 추가해야함
 
-        final RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
-        //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
+        recyclerView = view.findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, true));
 
-        LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
+        /*LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setReverseLayout(true);
         manager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
-        //LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
-        //linearSnapHelper.attachToRecyclerView(recyclerView);
+        recyclerView.setLayoutManager(manager); // timestamp 순으로 출력*/
+        LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
+        linearSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(firestoreAdapter);
 
         FloatingActionButton fab = view.findViewById(R.id.fab); // 새로고침 floating button
@@ -106,6 +108,42 @@ public class BoardFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    public class SnapHelperOneByOne extends LinearSnapHelper {
+
+        @Override
+        public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
+
+            if (!(layoutManager instanceof RecyclerView.SmoothScroller.ScrollVectorProvider)) {
+                return RecyclerView.NO_POSITION;
+            }
+
+            final View currentView = findSnapView(layoutManager);
+
+            if (currentView == null) {
+                return RecyclerView.NO_POSITION;
+            }
+
+            LinearLayoutManager myLayoutManager = (LinearLayoutManager) layoutManager;
+
+            int position1 = myLayoutManager.findFirstVisibleItemPosition();
+            int position2 = myLayoutManager.findLastVisibleItemPosition();
+
+            int currentPosition = layoutManager.getPosition(currentView);
+
+            if (velocityX > 400) {
+                currentPosition = position2;
+            } else if (velocityX < 400) {
+                currentPosition = position1;
+            }
+
+            if (currentPosition == RecyclerView.NO_POSITION) {
+                return RecyclerView.NO_POSITION;
+            }
+
+            return currentPosition;
+        }
     }
 
     public void refresh()
