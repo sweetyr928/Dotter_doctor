@@ -102,13 +102,19 @@ public class BoardFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                recyclerView.setAdapter(firestoreAdapter);
-                firestoreAdapter.notifyDataSetChanged();
+                refresh();
             }
         });
         return view;
     }
 
+    public void refresh()
+    {
+        //recyclerView.setAdapter(firestoreAdapter);
+        //firestoreAdapter.notifyDataSetChanged();
+        Toast.makeText(getContext(),"새로고침",Toast.LENGTH_SHORT).show();
+
+    }
     class RecyclerViewAdapter extends FirestoreAdapter<CustomViewHolder> {
         final private RequestOptions requestOptions = new RequestOptions().transforms(new CenterCrop(), new RoundedCorners(90));
         private StorageReference storageReference;
