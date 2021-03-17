@@ -23,7 +23,7 @@
             android:background="?attr/colorPrimary"
             app:badgeBackgroundColor="@android:color/white"
             app:badgeTextSize="11sp"
-            app:tabIndicatorColor="?attr/colorPrimary">
+            app:tabIndicatorColor="@android:color/white">
 
         </com.rahimlis.badgedtablayout.BadgedTabLayout>
 

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import gujc.directtalk9.CustomDialog;
 import gujc.directtalk9.R;
 import gujc.directtalk9.chat.ChatActivity;
@@ -56,7 +58,6 @@ public class BoardFragment extends Fragment {
     private FirebaseFirestore db;
     private Board board;
     public String boardid="";
-    RecyclerView recyclerView;
 
     public BoardFragment() {
     }
@@ -77,6 +78,7 @@ public class BoardFragment extends Fragment {
         }
     }
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -84,8 +86,9 @@ public class BoardFragment extends Fragment {
 
         firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp")); // orderby 추가해야함
 
-        recyclerView = view.findViewById(R.id.recyclerview);
+        final RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
+
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setReverseLayout(true);
         manager.setStackFromEnd(true);
@@ -93,22 +96,17 @@ public class BoardFragment extends Fragment {
         //LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
         //linearSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(firestoreAdapter);
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+
+        FloatingActionButton fab = view.findViewById(R.id.fab); // 새로고침 floating button
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refresh();
+
+                recyclerView.setAdapter(firestoreAdapter);
+                firestoreAdapter.notifyDataSetChanged();
             }
         });
-
         return view;
-    }
-
-    public void refresh()
-    {
-        //recyclerView.setAdapter(firestoreAdapter);
-        firestoreAdapter.notifyDataSetChanged();
-        Toast.makeText(getContext(), "새로고침", Toast.LENGTH_SHORT).show();
     }
 
     class RecyclerViewAdapter extends FirestoreAdapter<CustomViewHolder> {
@@ -223,7 +221,6 @@ public class BoardFragment extends Fragment {
                 board = snapshot.toObject(Board.class);
 
                 int status = board.getStatus();
-                System.out.println(status);
 
                 if (status==3&&board.isMatch()){
                     pd.dismiss();

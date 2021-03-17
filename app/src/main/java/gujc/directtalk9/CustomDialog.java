@@ -102,6 +102,8 @@ public class CustomDialog extends Dialog{
                     }
                 });
                 Toast.makeText(getContext(),"의사 매칭하기 버튼을 다시 눌러주세요!",Toast.LENGTH_LONG).show();
+                // 임시 : status 값이 2이면 invisible 해보이도록 설정한 후, 의사 매칭하기 버튼을 다시 누르면 새로운 board가 추가되는 형식으로 구현함
+                // 재매칭 할 때 CustomDialog에서 board delete 해버리면 에러나므로 어디서 delete 할지, 또는 다른 방식으로 처리할지 결정해야함
                 dlg.dismiss();
             }
         });
