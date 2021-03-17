@@ -226,30 +226,34 @@ public class ChatFragment extends Fragment {
         });
 
 
-//        //문진요약
-//        TextView btitle = view.findViewById(R.id.btitle);
-//        final TextView bresult = view.findViewById(R.id.bresult);
-//        rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                ChatRoomModel board = documentSnapshot.toObject(ChatRoomModel.class);
-//                String board2 = board.getBoard();
-//                bresult.setText(board2);
-//
-//            }
-//        });
-//
-//        bresult.bringToFront();
-//        btitle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(bresult.getVisibility() == View.GONE){
-//                    bresult.setVisibility(View.VISIBLE);
-//                }else{
-//                    bresult.setVisibility(View.GONE);
-//                }
-//            }
-//        });
+        //문진요약
+        TextView btitle = view.findViewById(R.id.btitle);
+        final TextView bresult = view.findViewById(R.id.bresult);
+        if (toTitle== null) {
+            rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    ChatRoomModel board = documentSnapshot.toObject(ChatRoomModel.class);
+                    String board2 = board.getBoard();
+                    bresult.setText(board2);
+
+                }
+            });
+        } else {
+            bresult.setText(toTitle);
+        }
+
+        bresult.bringToFront();
+        btitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(bresult.getVisibility() == View.GONE){
+                    bresult.setVisibility(View.VISIBLE);
+                }else{
+                    bresult.setVisibility(View.GONE);
+                }
+            }
+        });
 
         return view;
     }
