@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,12 +90,13 @@ public class BoardFragment extends Fragment {
         firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp")); // orderby 추가해야함
 
         recyclerView = view.findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, true));
+        //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
 
-        /*LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
-        manager.setReverseLayout(true);
-        manager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(manager); // timestamp 순으로 출력*/
+        LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        //manager.setReverseLayout(false);
+        //manager.setStackFromEnd(false);
+        recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
         LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
         linearSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(firestoreAdapter);
