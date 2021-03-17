@@ -93,10 +93,10 @@ import okhttp3.Response;
 import static android.app.Activity.RESULT_OK;
 
 public class ChatFragment extends Fragment {
-//브랜치 테스트1
+    //브랜치 테스트1
     private static final int PICK_FROM_ALBUM = 1;
     private static final int PICK_FROM_FILE = 2;
-    private static String rootPath = Util9.getRootPath()+"/DirectTalk9/";
+    private static String rootPath = Util9.getRootPath() + "/DirectTalk9/";
 
     private Button sendBtn;
     private EditText msg_input;
@@ -125,7 +125,7 @@ public class ChatFragment extends Fragment {
     public ChatFragment() {
     }
 
-    public static final ChatFragment getInstance(String toUid, String roomID,String toTitle) {
+    public static final ChatFragment getInstance(String toUid, String roomID, String toTitle) {
         ChatFragment f = new ChatFragment();
         Bundle bdl = new Bundle();
         bdl.putString("toUid", toUid);
@@ -166,7 +166,7 @@ public class ChatFragment extends Fragment {
         }
 
         firestore = FirebaseFirestore.getInstance();
-        storageReference  = FirebaseStorage.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         dateFormatDay.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         dateFormatHour.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
@@ -177,25 +177,24 @@ public class ChatFragment extends Fragment {
          two user: roomid or uid talking
          multi user: roomid
          */
-        if (!"".equals(toUid) && toUid!=null) {                     // find existing room for two user
-            findChatRoom(toUid);
-        } else
-        if (!"".equals(roomID) && roomID!=null) { // existing room (multi user)
+        if (!"".equals(roomID) && roomID != null) { // existing room (multi user)
             setChatRoom(roomID);
-        };
+        } else if (!"".equals(toUid) && toUid != null) {                     // find existing room for two user
+            findChatRoom(toUid);
+        }
 
-        if (roomID==null) {                                                     // new room for two user
+        if (roomID == null) {                                                     // new room for two user
             getUserInfoFromServer(myUid);
             getUserInfoFromServer(toUid);
             userCount = 2;
-        };
+        }
 
         recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v,
                                        int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (mAdapter!=null & bottom < oldBottom) {
+                if (mAdapter != null & bottom < oldBottom) {
                     final int lastAdapterItem = mAdapter.getItemCount() - 1;
                     recyclerView.post(new Runnable() {
                         @Override
@@ -212,13 +211,40 @@ public class ChatFragment extends Fragment {
             }
         });
 
+        final DocumentReference rooms = firestore.collection("rooms").document(roomID);
+        rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    documentSnapshot.getData();
+                    System.out.println("exists");
+                } else {
+                    CreateChattingRoom(rooms);
+                    setChatRoom(roomID);
+                    System.out.println("create chat");
+                }
+            }
+        });
+
+
         //문진요약
         TextView btitle = view.findViewById(R.id.btitle);
         final TextView bresult = view.findViewById(R.id.bresult);
-        bresult.setText(toTitle);
+        if (toTitle== null) {
+            rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    ChatRoomModel board = documentSnapshot.toObject(ChatRoomModel.class);
+                    String board2 = board.getBoard();
+                    bresult.setText(board2);
+
+                }
+            });
+        } else {
+            bresult.setText(toTitle);
+        }
 
         bresult.bringToFront();
-
         btitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -242,7 +268,7 @@ public class ChatFragment extends Fragment {
     }
 
     // get a user info
-    void getUserInfoFromServer(String id){
+    void getUserInfoFromServer(String id) {
         firestore.collection("users").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -257,16 +283,18 @@ public class ChatFragment extends Fragment {
     }
 
     // Returns the room ID after locating the chatting room with the user ID.
-    void findChatRoom(final String toUid){
-        firestore.collection("rooms").whereGreaterThanOrEqualTo("users."+myUid, 0).get()
+    void findChatRoom(final String toUid) {
+        firestore.collection("rooms").whereGreaterThanOrEqualTo("users." + myUid, 0).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (!task.isSuccessful()) {return;}
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String, Long> users = (Map<String, Long>) document.get("users");
-                            if (users.size()==2 & users.get(toUid)!=null){
+                            if (users.size() == 2 & users.get(toUid) != null) {
                                 setChatRoom(document.getId());
                                 break;
                             }
@@ -281,14 +309,21 @@ public class ChatFragment extends Fragment {
         firestore.collection("rooms").document(roomID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (!task.isSuccessful()) {return;}
+                if (!task.isSuccessful()) {
+                    return;
+                }
                 DocumentSnapshot document = task.getResult();
                 Map<String, Long> users = (Map<String, Long>) document.get("users");
-
-                for( String key : users.keySet() ){
-                    getUserInfoFromServer(key);
+                if (users == null) {
+                    getUserInfoFromServer(myUid);
+                    getUserInfoFromServer(toUid);
+                    userCount = 2;
+                } else {
+                    for (String key : users.keySet()) {
+                        getUserInfoFromServer(key);
+                    }
+                    userCount = users.size();
                 }
-                userCount = users.size();
                 //users.put(myUid, (long) 0);
                 //document.getReference().update("users", users);
             }
@@ -296,12 +331,14 @@ public class ChatFragment extends Fragment {
     }
 
     void setUnread2Read() {
-        if (roomID==null) return;
+        if (roomID == null) return;
 
         firestore.collection("rooms").document(roomID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (!task.isSuccessful()) {return;}
+                if (!task.isSuccessful()) {
+                    return;
+                }
                 DocumentSnapshot document = task.getResult();
                 Map<String, Long> users = (Map<String, Long>) document.get("users");
 
@@ -314,13 +351,14 @@ public class ChatFragment extends Fragment {
     public void CreateChattingRoom(final DocumentReference room) {
         Map<String, Integer> users = new HashMap<>();
         String title = "";
-        for( String key : userList.keySet() ){
-            users.put(key, 0);
-        }
+        users.put(myUid, 0);
+        users.put(toUid, 0);
+        System.out.println("createroom");
+
         Map<String, Object> data = new HashMap<>();
         data.put("title", null);
         data.put("users", users);
-        data.put("board",toTitle);
+        data.put("board", toTitle);
 
         room.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -332,6 +370,7 @@ public class ChatFragment extends Fragment {
             }
         });
     }
+
     public Map<String, UserModel> getUserList() {
         return userList;
     }
@@ -348,17 +387,17 @@ public class ChatFragment extends Fragment {
     private void sendMessage(final String msg, String msgtype, final ChatModel.FileInfo fileinfo) {
         sendBtn.setEnabled(false);
 
-        if (roomID==null) {             // create chatting room for two user
+        if (roomID == null) {             // create chatting room for two user
             roomID = firestore.collection("rooms").document().getId();
-            CreateChattingRoom( firestore.collection("rooms").document(roomID) );
+            CreateChattingRoom(firestore.collection("rooms").document(roomID));
         }
 
-        final Map<String,Object> messages = new HashMap<>();
+        final Map<String, Object> messages = new HashMap<>();
         messages.put("uid", myUid);
         messages.put("msg", msg);
         messages.put("msgtype", msgtype);
         messages.put("timestamp", FieldValue.serverTimestamp());
-        if (fileinfo!=null){
+        if (fileinfo != null) {
             messages.put("filename", fileinfo.filename);
             messages.put("filesize", fileinfo.filesize);
         }
@@ -367,7 +406,9 @@ public class ChatFragment extends Fragment {
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (!task.isSuccessful()) {return;}
+                if (!task.isSuccessful()) {
+                    return;
+                }
 
                 WriteBatch batch = firestore.batch();
 
@@ -384,8 +425,8 @@ public class ChatFragment extends Fragment {
                 DocumentSnapshot document = task.getResult();
                 Map<String, Long> users = (Map<String, Long>) document.get("users");
 
-                for( String key : users.keySet() ){
-                    if (!myUid.equals(key)) users.put(key, users.get(key)+1);
+                for (String key : users.keySet()) {
+                    if (!myUid.equals(key)) users.put(key, users.get(key) + 1);
                 }
                 document.getReference().update("users", users);
 
@@ -400,9 +441,10 @@ public class ChatFragment extends Fragment {
             }
 
         });
-    };
+    }
 
-    void sendGCM(){
+    //알림보내는 함수
+    void sendGCM() {
         Gson gson = new Gson();
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.notification.title = userList.get(myUid).getUsernm();
@@ -410,7 +452,7 @@ public class ChatFragment extends Fragment {
         notificationModel.data.title = userList.get(myUid).getUsernm();
         notificationModel.data.body = msg_input.getText().toString();
 
-        for ( Map.Entry<String, UserModel> elem : userList.entrySet() ){
+        for (Map.Entry<String, UserModel> elem : userList.entrySet()) {
             if (myUid.equals(elem.getValue().getUid())) continue;
             notificationModel.to = elem.getValue().getToken();
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationModel));
@@ -424,9 +466,12 @@ public class ChatFragment extends Fragment {
             OkHttpClient okHttpClient = new OkHttpClient();
             okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {                }
+                public void onFailure(Call call, IOException e) {
+                }
+
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {                }
+                public void onResponse(Call call, Response response) throws IOException {
+                }
             });
         }
     }
@@ -453,21 +498,25 @@ public class ChatFragment extends Fragment {
     // uploading image / file
     @Override
     public void onActivityResult(final int requestCode, int resultCode, Intent data) {
-        if (resultCode!= RESULT_OK) { return;}
+        if (resultCode != RESULT_OK) {
+            return;
+        }
         Uri fileUri = data.getData();
         final String filename = Util9.getUniqueValue();
 
         showProgressDialog("Uploading selected File.");
-        final ChatModel.FileInfo fileinfo  = getFileDetailFromUri(getContext(), fileUri);
+        final ChatModel.FileInfo fileinfo = getFileDetailFromUri(getContext(), fileUri);
 
-        storageReference.child("files/"+filename).putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        storageReference.child("files/" + filename).putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 sendMessage(filename, Integer.toString(requestCode), fileinfo);
                 hideProgressDialog();
             }
         });
-        if (requestCode != PICK_FROM_ALBUM) { return;}
+        if (requestCode != PICK_FROM_ALBUM) {
+            return;
+        }
 
         // small image
         Glide.with(getContext())
@@ -480,14 +529,16 @@ public class ChatFragment extends Fragment {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                         byte[] data = baos.toByteArray();
-                        storageReference.child("filesmall/"+filename).putBytes(data);
+                        storageReference.child("filesmall/" + filename).putBytes(data);
                     }
                 });
     }
 
     // get file name and size from Uri
     public static ChatModel.FileInfo getFileDetailFromUri(final Context context, final Uri uri) {
-        if (uri == null) { return null; }
+        if (uri == null) {
+            return null;
+        }
 
         ChatModel.FileInfo fileDetail = new ChatModel.FileInfo();
         // File Scheme.

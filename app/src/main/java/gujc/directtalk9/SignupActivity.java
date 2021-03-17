@@ -54,7 +54,6 @@ public class SignupActivity extends AppCompatActivity {
             if (!validateForm()) return;
             final String id = user_id.getText().toString();
             final String phone = user_phone.getText().toString();
-            System.out.println(phone);
 
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(id,user_pw.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
