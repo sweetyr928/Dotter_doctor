@@ -177,8 +177,7 @@ public class ChatFragment extends Fragment {
          */
         if (!"".equals(roomID) && roomID != null) { // existing room (multi user)
             setChatRoom(roomID);
-        }
-        else if (!"".equals(toUid) && toUid != null) {                     // find existing room for two user
+        } else if (!"".equals(toUid) && toUid != null) {                     // find existing room for two user
             findChatRoom(toUid);
         }
 
@@ -209,16 +208,17 @@ public class ChatFragment extends Fragment {
                 }
             }
         });
-System.out.println(roomID);
-        DocumentReference rooms = firestore.collection("rooms").document(roomID);
+        System.out.println(roomID);
+        final DocumentReference rooms = firestore.collection("rooms").document(roomID);
 
         rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists()) {
+                if (documentSnapshot.exists()) {
                     documentSnapshot.getData();
                     System.out.println("exists");
-                }else{
+                } else {
+                    CreateChattingRoom(rooms);
                     setChatRoom(roomID);
                     System.out.println("create chat");
                 }
@@ -310,11 +310,17 @@ System.out.println(roomID);
                 }
                 DocumentSnapshot document = task.getResult();
                 Map<String, Long> users = (Map<String, Long>) document.get("users");
-
-                for (String key : users.keySet()) {
-                    getUserInfoFromServer(key);
+                System.out.println(myUid);
+                if (users == null) {
+                    getUserInfoFromServer(myUid);
+                    getUserInfoFromServer(toUid);
+                    userCount = 2;
+                } else {
+                    for (String key : users.keySet()) {
+                        getUserInfoFromServer(key);
+                    }
+                    userCount = users.size();
                 }
-                userCount = users.size();
                 //users.put(myUid, (long) 0);
                 //document.getReference().update("users", users);
                 System.out.println("setchatroom");
@@ -343,11 +349,9 @@ System.out.println(roomID);
     public void CreateChattingRoom(final DocumentReference room) {
         Map<String, Integer> users = new HashMap<>();
         String title = "";
-        for (String key : userList.keySet()) {
-            users.put(key, 0);
-            System.out.println(userList);
-        }
-        System.out .println("createroom");
+        users.put(myUid, 0);
+        users.put(toUid, 0);
+        System.out.println("createroom");
 
         Map<String, Object> data = new HashMap<>();
         data.put("title", null);
