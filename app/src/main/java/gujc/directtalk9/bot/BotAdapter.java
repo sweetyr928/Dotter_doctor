@@ -50,26 +50,6 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
     public void onBindViewHolder(@NonNull final BotAdapter.Holder holder, int position) {
         holder.botname.setText(arrayList.get(position).getName());
         holder.botcurrent.setText(arrayList.get(position).getCurrent());
-//        holder.botname.setVisibility(View.GONE);
-
-//누르면 토스트띄워줌
-//        holder.itemView.setTag(position);
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String curname = holder.botname.getText().toString();
-//                Toast.makeText(view.getContext(),curname,Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//메시지 길게누르면 삭제
-//        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                remove(holder.getAdapterPosition());
-//                return true;
-//            }
-//        });
-
 
     }
 
@@ -77,15 +57,6 @@ public class BotAdapter extends RecyclerView.Adapter<BotAdapter.Holder> {
     public int getItemCount() {
         return (null != arrayList ? arrayList.size() : 0);
     }
-//메시지 삭제
-//    public void remove(int position){
-//        try{
-//            arrayList.remove(position);
-//            notifyItemRemoved(position);
-//        }catch (IndexOutOfBoundsException e){
-//            e.printStackTrace();
-//        }
-//    }
 
     public class Holder extends RecyclerView.ViewHolder {
         protected TextView botname;

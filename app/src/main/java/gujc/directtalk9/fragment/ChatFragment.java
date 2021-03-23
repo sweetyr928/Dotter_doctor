@@ -93,7 +93,6 @@ import okhttp3.Response;
 import static android.app.Activity.RESULT_OK;
 
 public class ChatFragment extends Fragment {
-    //브랜치 테스트1
     private static final int PICK_FROM_ALBUM = 1;
     private static final int PICK_FROM_FILE = 2;
     private static String rootPath = Util9.getRootPath() + "/DirectTalk9/";
