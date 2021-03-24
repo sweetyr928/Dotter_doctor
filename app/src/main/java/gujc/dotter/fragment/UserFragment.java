@@ -19,6 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+
+import gujc.dotter.LoginActivity;
 import gujc.dotter.R;
 import gujc.dotter.UserPWActivity;
 import gujc.dotter.common.Util9;
@@ -52,6 +54,7 @@ public class UserFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
 
+
         user_id = view.findViewById(R.id.user_id);
         user_id.setEnabled(false);
         user_name = view.findViewById(R.id.user_name);
@@ -63,6 +66,8 @@ public class UserFragment extends Fragment {
         saveBtn.setOnClickListener(saveBtnClickListener);
         Button changePWBtn = view.findViewById(R.id.changePWBtn);
         changePWBtn.setOnClickListener(changePWBtnClickListener);
+        Button LogOutBtn = view.findViewById(R.id.logOutBtn);
+        LogOutBtn.setOnClickListener(logoutBtnClickListener);
 
         getUserInfoFromServer();
         return view;
@@ -149,6 +154,14 @@ public class UserFragment extends Fragment {
     Button.OnClickListener changePWBtnClickListener = new View.OnClickListener() {
         public void onClick(final View view) {
             startActivity(new Intent(getActivity(), UserPWActivity.class));
+        }
+    };
+
+    Button.OnClickListener logoutBtnClickListener = new View.OnClickListener() {
+        public void onClick(final View view) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            startActivity(intent);
         }
     };
 
