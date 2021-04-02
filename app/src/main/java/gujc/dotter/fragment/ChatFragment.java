@@ -106,6 +106,7 @@ public class ChatFragment extends Fragment {
     private String myUid;
     private String toUid;
     private String toTitle;
+    private String toPhone;
     private Map<String, UserModel> userList = new HashMap<>();
 
     private ListenerRegistration listenerRegistration;
@@ -120,12 +121,13 @@ public class ChatFragment extends Fragment {
     public ChatFragment() {
     }
 
-    public static final ChatFragment getInstance(String toUid, String roomID, String toTitle) {
+    public static final ChatFragment getInstance(String toUid, String roomID, String toTitle,String toPhone) {
         ChatFragment f = new ChatFragment();
         Bundle bdl = new Bundle();
         bdl.putString("toUid", toUid);
         bdl.putString("roomID", roomID);
         bdl.putString("toTitle", toTitle);
+        bdl.putString("toPhone",toPhone);
         f.setArguments(bdl);
         return f;
     }
@@ -158,6 +160,7 @@ public class ChatFragment extends Fragment {
             roomID = getArguments().getString("roomID");
             toUid = getArguments().getString("toUid");
             toTitle = getArguments().getString("toTitle");
+            toPhone = getArguments().getString("toPhone");
         }
 
         firestore = FirebaseFirestore.getInstance();
@@ -351,6 +354,8 @@ public class ChatFragment extends Fragment {
         data.put("title", null);
         data.put("users", users);
         data.put("board", toTitle);
+        data.put("phone",toPhone);
+        data.put("request",1);
 
         room.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

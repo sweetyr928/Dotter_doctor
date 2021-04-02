@@ -1,12 +1,17 @@
 package gujc.dotter.fragment;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +23,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -26,13 +39,19 @@ import java.util.List;
 import java.util.Map;
 
 import gujc.dotter.R;
+import gujc.dotter.chat.ChatActivity;
 import gujc.dotter.chat.SelectUserActivity;
+import gujc.dotter.model.Board;
+import gujc.dotter.model.ChatRoomModel;
 import gujc.dotter.model.UserModel;
 
 public class UserListInRoomFragment extends Fragment {
     private String roomID;
     private List<UserModel> userModels;
     private RecyclerView recyclerView;
+    private FirebaseFirestore db;
+    ProgressDialog pd;
+    String phoneNum="";
 
     public UserListInRoomFragment() {
     }
@@ -64,16 +83,97 @@ public class UserListInRoomFragment extends Fragment {
         recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext())));
         recyclerView.setAdapter(new UserFragmentRecyclerViewAdapter());
 
+        System.out.println(roomID);
+
+        final DocumentReference rooms = db.getInstance().collection("rooms").document(roomID);
+        rooms.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    return;
+                }
+                ChatRoomModel chatRoomModel = snapshot.toObject(ChatRoomModel.class);
+                assert chatRoomModel != null;
+                phoneNum = chatRoomModel.getPhone();
+                System.out.println(phoneNum);
+            }
+        });
+
+
         view.findViewById(R.id.addContactBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Intent intent = new Intent(getActivity(), SelectUserActivity.class);
-                intent.putExtra("roomID", roomID);
-                startActivity(intent);
+                pd = ProgressDialog.show(getContext(), "", "본인확인 요청 중");
+                phoneCheck();
             }
         });
 
         return view;
+    }
+
+    void phoneCheck()
+    {
+
+        final DocumentReference rooms = db.getInstance().collection("rooms").document(roomID);
+        rooms.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        @Override
+        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                            @Nullable FirebaseFirestoreException e) {
+            if (e != null) {
+                return;
+            }
+
+            ChatRoomModel chatRoomModel = snapshot.toObject(ChatRoomModel.class);
+            int request = chatRoomModel.getIdentification();
+            snapshot.getReference().update("request",2);
+
+            if(request==3)
+            {
+                pd.dismiss();
+                AlertDialog.Builder oDialog = new AlertDialog.Builder(getContext(),
+                        android.R.style.Theme_DeviceDefault_Light_Dialog);
+
+                oDialog.setMessage(phoneNum)
+                        .setTitle("      본인확인이 수락되었습니다.")
+                        .setPositiveButton("CANCEL", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                            }
+                        })
+                        .setNeutralButton("OK", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+
+                            }
+                        })
+                        .setCancelable(false) // 백버튼으로 팝업창이 닫히지 않도록 한다.
+                        .show();
+            }
+            else if (request==4)
+            {
+                pd.dismiss();
+                AlertDialog.Builder oDialog = new AlertDialog.Builder(getContext(),
+                        android.R.style.Theme_DeviceDefault_Light_Dialog);
+                oDialog.setMessage("요청이 거절되었습니다.")
+                        .setTitle("        알림")
+                        .setNeutralButton("OK", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+
+                            }
+                        })
+                        .setCancelable(false) // 백버튼으로 팝업창이 닫히지 않도록 한다.
+                        .show();
+            }
+
+
+            }
+        });
     }
 
     public void setUserList(List<UserModel> users) {

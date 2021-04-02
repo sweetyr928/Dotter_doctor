@@ -25,7 +25,6 @@ import java.util.Map;
 import gujc.dotter.fragment.BoardFragment;
 import gujc.dotter.fragment.ChatRoomFragment;
 import gujc.dotter.fragment.UserFragment;
-import gujc.dotter.fragment.WriteFragment;
 
 public class MainActivity extends AppCompatActivity {
 
