@@ -94,9 +94,9 @@ public class BoardFragment extends Fragment {
         //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
 
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
-        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        manager.setReverseLayout(false); // 제일 처음 등록된 글이 제일 오른쪽으로 가고 제일 첫번째로 뜸
-        //manager.setStackFromEnd(false);
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        manager.setReverseLayout(true);
+        manager.setStackFromEnd(false);
         recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
         LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
         linearSnapHelper.attachToRecyclerView(recyclerView);

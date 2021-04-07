@@ -125,7 +125,7 @@ public class UserListInRoomFragment extends Fragment {
             }
 
             ChatRoomModel chatRoomModel = snapshot.toObject(ChatRoomModel.class);
-            int request = chatRoomModel.getIdentification();
+            int request = chatRoomModel.getRequest();
             snapshot.getReference().update("request",2);
 
             if(request==3)
