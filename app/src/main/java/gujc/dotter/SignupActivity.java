@@ -27,6 +27,8 @@ public class SignupActivity extends AppCompatActivity {
     private EditText user_id;
     private EditText user_pw;
     private EditText user_phone;
+    private EditText user_name;
+    private EditText user_pwtest;
     SharedPreferences sharedPreferences;
 
     @Override
@@ -37,6 +39,8 @@ public class SignupActivity extends AppCompatActivity {
         user_id = findViewById(R.id.user_id);
         user_pw = findViewById(R.id.user_pw);
         user_phone = findViewById(R.id.user_phone);
+        user_pwtest = findViewById(R.id.user_pwtest);
+        user_name = findViewById(R.id.user_name);
         Button signupBtn = findViewById(R.id.signupBtn);
 
         signupBtn.setOnClickListener(signupClick);
@@ -53,6 +57,7 @@ public class SignupActivity extends AppCompatActivity {
             if (!validateForm()) return;
             final String id = user_id.getText().toString();
             final String phone = user_phone.getText().toString();
+            final String name = user_name.getText().toString();
 
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(id,user_pw.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
@@ -64,6 +69,7 @@ public class SignupActivity extends AppCompatActivity {
                         UserModel userModel = new UserModel();
                         userModel.setUid(uid);
                         userModel.setUserid(id);
+                        userModel.setUsernm(name);
                         userModel.setUsernm(extractIDFromEmail(id));
                         userModel.setPhone(phone);
                         userModel.setUsermsg("...");
@@ -112,12 +118,31 @@ public class SignupActivity extends AppCompatActivity {
             user_pw.setError(null);
         }
 
+        String password2 = user_pwtest.getText().toString();
+        if (TextUtils.isEmpty(password2)){
+            user_pwtest.setError("Required.");
+            valid = false;
+        } else if (!password.equals(password2)){
+            user_pwtest.setError("password not correct");
+        }
+        else {
+            user_pw.setError(null);
+        }
+
         String phone = user_phone.getText().toString();
         if (TextUtils.isEmpty(phone)){
             user_phone.setError("Required");
             valid = false;
         }else{
             user_phone.setError(null);
+        }
+
+        String name = user_name.getText().toString();
+        if (TextUtils.isEmpty(name)){
+            user_name.setError("Required");
+            valid = false;
+        }else{
+            user_name.setError(null);
         }
 
         return valid;
