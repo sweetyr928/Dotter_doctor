@@ -33,16 +33,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:text="User ID"
+                android:text="User name"
                 android:textSize="18dp" />
 
             <TextView
-                android:id="@+id/user_title"
+                android:id="@+id/timestamp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="40dp"
-                android:text="Title"
+                android:text="timestamp"
                 android:textSize="18dp" />
 
         </RelativeLayout>

@@ -1,5 +1,6 @@
 package gujc.dotter.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,35 +12,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import gujc.dotter.R;
 import gujc.dotter.bot.BotAdapter;
 import gujc.dotter.common.FirestoreAdapter;
 import gujc.dotter.model.Board;
+import gujc.dotter.model.UserModel;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChartFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ChartFragment extends Fragment {
-
-    private String myuid;
+    private Board chart;
+    private String myuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String dname;
+    private Date timestamp;
 
 
     public ChartFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
-        myuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
 
         return view;
@@ -55,11 +58,23 @@ public class ChartFragment extends Fragment {
         @NonNull
         @Override
         public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return null;
+            Context context = parent.getContext();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.item_chart,parent,false);
+            return new Holder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull Holder holder, int position) {
+            DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document();
+            ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    chart = documentSnapshot.toObject(Board.class);
+                    dname = chart.getDoctor();
+                    timestamp = chart.getTimestamp();
+                }
+            });
 
         }
 
@@ -75,6 +90,8 @@ public class ChartFragment extends Fragment {
 
         public Holder(@NonNull View itemView) {
             super(itemView);
+            name = itemView.findViewById(R.id.user_name);
+            timestamp = itemView.findViewById(R.id.timestamp);
         }
     }
 }
