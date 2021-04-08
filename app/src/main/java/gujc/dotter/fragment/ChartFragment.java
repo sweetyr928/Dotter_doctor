@@ -41,7 +41,7 @@ public class ChartFragment extends Fragment {
     private Board chart;
     private String myuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String dname;
-    private Date timestamp;
+    private Date timestamp1;
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
     private FirestoreAdapter firestoreAdapter;
@@ -75,17 +75,17 @@ public class ChartFragment extends Fragment {
             storageReference = FirebaseStorage.getInstance().getReference();
         }
 
-        @NonNull
         @Override
-        public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            Context context = parent.getContext();
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.item_chart,parent,false);
-            return new Holder(view);
+        public ChartFragment.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new ChartFragment.Holder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_board, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull Holder holder, int position) {
+        public void onBindViewHolder(ChartFragment.Holder holder, int position) {
+            final DocumentSnapshot documentSnapshot = getSnapshot(position);
+            final Board board = documentSnapshot.toObject(Board.class);
+
             DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document();
             FirebaseFirestore.getInstance().collection("Board").whereEqualTo("id",myuid).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -94,14 +94,14 @@ public class ChartFragment extends Fragment {
                             for (DocumentSnapshot documentSnapshot : task.getResult()){
                                 chart = documentSnapshot.toObject(Board.class);
                                 dname = chart.getDoctor();
-                                timestamp = chart.getTimestamp();
+                                timestamp1 = chart.getTimestamp();
                                 System.out.println("print"+dname);
                             }
 
                         }
                     });
-            holder.name.setText(dname);
-            holder.timestamp.setText((CharSequence) timestamp);
+            holder.name.setText(board.getName());
+            holder.timestamp.setText((CharSequence) board.getTimestamp());
 
         }
 
