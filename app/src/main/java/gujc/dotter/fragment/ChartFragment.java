@@ -28,6 +28,7 @@ import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -41,20 +42,37 @@ public class ChartFragment extends Fragment {
     private Board chart;
     private String myuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String dname;
-    private Date timestamp1;
+    private String timestamp1;
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
     private FirestoreAdapter firestoreAdapter;
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd");
 
 
     public ChartFragment() {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (firestoreAdapter != null) {
+            firestoreAdapter.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (firestoreAdapter != null) {
+            firestoreAdapter.stopListening();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
         recyclerView = view.findViewById(R.id.recyclerview);
-        firestoreAdapter = new ChartFragment.Adapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp"));
+        firestoreAdapter = new ChartFragment.Adapter(FirebaseFirestore.getInstance().collection("Board").whereEqualTo("id",myuid).orderBy("timestamp"));
 
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -78,7 +96,7 @@ public class ChartFragment extends Fragment {
         @Override
         public ChartFragment.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new ChartFragment.Holder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_board, parent, false));
+                    .inflate(R.layout.item_chart, parent, false));
         }
 
         @Override
@@ -86,30 +104,32 @@ public class ChartFragment extends Fragment {
             final DocumentSnapshot documentSnapshot = getSnapshot(position);
             final Board board = documentSnapshot.toObject(Board.class);
 
-            DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document();
-            FirebaseFirestore.getInstance().collection("Board").whereEqualTo("id",myuid).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            for (DocumentSnapshot documentSnapshot : task.getResult()){
-                                chart = documentSnapshot.toObject(Board.class);
-                                dname = chart.getDoctor();
-                                timestamp1 = chart.getTimestamp();
-                                System.out.println("print"+dname);
-                            }
+//            DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document();
+//            FirebaseFirestore.getInstance().collection("Board").whereEqualTo("id",myuid).get()
+//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            for (DocumentSnapshot documentSnapshot : task.getResult()){
+//                                chart = documentSnapshot.toObject(Board.class);
+//                                dname = chart.getDoctor();
+//                                timestamp1 = chart.getTimestamp();
+//                                System.out.println("print"+dname);
+//                            }
+//
+//                        }
+//                    });
 
-                        }
-                    });
             holder.name.setText(board.getName());
-            holder.timestamp.setText((CharSequence) board.getTimestamp());
+            timestamp1 = simpleDateFormat.format(board.getTimestamp());
+            holder.timestamp.setText(timestamp1);
 
         }
 
     }
 
     private class Holder extends RecyclerView.ViewHolder {
-        TextView name;
-        TextView timestamp;
+        public TextView name;
+        public TextView timestamp;
 
         public Holder(@NonNull View itemView) {
             super(itemView);
