@@ -14,12 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -84,14 +87,19 @@ public class ChartFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull Holder holder, int position) {
             DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document();
-            ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    chart = documentSnapshot.toObject(Board.class);
-                    dname = chart.getDoctor();
-                    timestamp = chart.getTimestamp();
-                }
-            });
+            FirebaseFirestore.getInstance().collection("Board").whereEqualTo("id",myuid).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            for (DocumentSnapshot documentSnapshot : task.getResult()){
+                                chart = documentSnapshot.toObject(Board.class);
+                                dname = chart.getDoctor();
+                                timestamp = chart.getTimestamp();
+                                System.out.println("print"+dname);
+                            }
+
+                        }
+                    });
             holder.name.setText(dname);
             holder.timestamp.setText((CharSequence) timestamp);
 
