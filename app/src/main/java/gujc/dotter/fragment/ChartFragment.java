@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -17,6 +19,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
@@ -34,6 +39,9 @@ public class ChartFragment extends Fragment {
     private String myuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String dname;
     private Date timestamp;
+    private LinearLayoutManager manager;
+    private RecyclerView recyclerView;
+    private FirestoreAdapter firestoreAdapter;
 
 
     public ChartFragment() {
@@ -42,18 +50,27 @@ public class ChartFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
+        recyclerView = view.findViewById(R.id.recyclerview);
+        firestoreAdapter = new ChartFragment.Adapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp"));
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        manager.setReverseLayout(true);
+        manager.setStackFromEnd(false);
+        recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
+        recyclerView.setAdapter(firestoreAdapter);
 
         return view;
     }
 
-    class Adapter extends RecyclerView.Adapter<Holder> {
+    class Adapter extends FirestoreAdapter<Holder> {
+        private StorageReference storageReference;
         ArrayList<Board> board;
-        Adapter(ArrayList<Board> board ){
-            this.board = board;
-        }
 
+        Adapter(Query query) {
+            super(query);
+            storageReference = FirebaseStorage.getInstance().getReference();
+        }
 
         @NonNull
         @Override
@@ -75,13 +92,11 @@ public class ChartFragment extends Fragment {
                     timestamp = chart.getTimestamp();
                 }
             });
+            holder.name.setText(dname);
+            holder.timestamp.setText((CharSequence) timestamp);
 
         }
 
-        @Override
-        public int getItemCount() {
-            return board.size();
-        }
     }
 
     private class Holder extends RecyclerView.ViewHolder {

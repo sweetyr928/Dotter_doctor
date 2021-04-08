@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             switch (position) {
                 case 0: return new ChartFragment();
                 case 1: return new ChatRoomFragment();
-                default: return new UserFragment();
+                default: return new WriteFragment();
             }
         }
 
