@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gujc.dotter.fragment.BoardFragment;
+import gujc.dotter.fragment.ChartFragment;
 import gujc.dotter.fragment.ChatRoomFragment;
 import gujc.dotter.fragment.UserFragment;
 import gujc.dotter.fragment.WriteFragment;
@@ -130,9 +131,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case 0: return new BoardFragment();
+                case 0: return new ChartFragment();
                 case 1: return new ChatRoomFragment();
-                default: return new UserFragment();
+                default: return new WriteFragment();
             }
         }
 
