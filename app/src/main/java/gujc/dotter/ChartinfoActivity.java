@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -14,11 +15,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import gujc.dotter.model.Board;
 
 public class ChartinfoActivity extends AppCompatActivity {
-    private EditText doctor;
-    private EditText hospital;
-    private EditText timestamp;
-    private EditText board;
-    private EditText chartnote;
+    private TextView doctor;
+    private TextView hospital;
+    private TextView timestamp;
+    private TextView board;
+    private TextView chartnote;
     private Button receipt;
 
     @Override

@@ -48,7 +48,7 @@ public class ChartFragment extends Fragment {
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
     private FirestoreAdapter firestoreAdapter;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd HH:mm");
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 
     public ChartFragment() {
@@ -74,7 +74,7 @@ public class ChartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
         recyclerView = view.findViewById(R.id.recyclerview);
-        firestoreAdapter = new ChartFragment.Adapter(FirebaseFirestore.getInstance()
+        firestoreAdapter = new Adapter(FirebaseFirestore.getInstance()
                 .collection("Board").whereEqualTo("id", myuid).orderBy("timestamp"));
 
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
@@ -117,7 +117,7 @@ public class ChartFragment extends Fragment {
                     Intent intent = new Intent(getView().getContext(), ChartinfoActivity.class);
                     intent.putExtra("doctor", board.getDoctor());
                     intent.putExtra("hospital", board.getHospital());
-                    intent.putExtra("timestamp", board.getTimestamp());
+                    intent.putExtra("timestamp", timestamp1);
                     intent.putExtra("board", board.getTitle());
                     intent.putExtra("phone", board.getName());
 
