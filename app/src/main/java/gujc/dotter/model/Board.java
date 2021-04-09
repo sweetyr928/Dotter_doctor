@@ -13,6 +13,15 @@ public class Board {
     public String hospital;
     public String doctorid;
     public int status; // 1: 등록 2: 매칭 대기 중 3: 매칭 성공
+    public String phone;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public int getStatus() { return status;}
 

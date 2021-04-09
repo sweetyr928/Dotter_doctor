@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case 0: return new ChartFragment();
+                case 0: return new BoardFragment();
                 case 1: return new ChatRoomFragment();
-                default: return new WriteFragment();
+                default: return new ChartFragment();
             }
         }
 
