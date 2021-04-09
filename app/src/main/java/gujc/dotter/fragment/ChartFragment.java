@@ -1,6 +1,7 @@
 package gujc.dotter.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import gujc.dotter.ChartinfoActivity;
 import gujc.dotter.R;
 import gujc.dotter.bot.BotAdapter;
 import gujc.dotter.common.FirestoreAdapter;
@@ -46,7 +48,7 @@ public class ChartFragment extends Fragment {
     private LinearLayoutManager manager;
     private RecyclerView recyclerView;
     private FirestoreAdapter firestoreAdapter;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd");
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd HH:mm");
 
 
     public ChartFragment() {
@@ -72,7 +74,8 @@ public class ChartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
         recyclerView = view.findViewById(R.id.recyclerview);
-        firestoreAdapter = new ChartFragment.Adapter(FirebaseFirestore.getInstance().collection("Board").whereEqualTo("id",myuid).orderBy("timestamp"));
+        firestoreAdapter = new ChartFragment.Adapter(FirebaseFirestore.getInstance()
+                .collection("Board").whereEqualTo("id", myuid).orderBy("timestamp"));
 
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -104,24 +107,23 @@ public class ChartFragment extends Fragment {
             final DocumentSnapshot documentSnapshot = getSnapshot(position);
             final Board board = documentSnapshot.toObject(Board.class);
 
-//            DocumentReference ref = FirebaseFirestore.getInstance().collection("Board").document();
-//            FirebaseFirestore.getInstance().collection("Board").whereEqualTo("id",myuid).get()
-//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                            for (DocumentSnapshot documentSnapshot : task.getResult()){
-//                                chart = documentSnapshot.toObject(Board.class);
-//                                dname = chart.getDoctor();
-//                                timestamp1 = chart.getTimestamp();
-//                                System.out.println("print"+dname);
-//                            }
-//
-//                        }
-//                    });
-
-            holder.name.setText(board.getName());
+            holder.name.setText(board.getDoctor()+"선생님");
             timestamp1 = simpleDateFormat.format(board.getTimestamp());
             holder.timestamp.setText(timestamp1);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getView().getContext(), ChartinfoActivity.class);
+                    intent.putExtra("doctor", board.getDoctor());
+                    intent.putExtra("hospital", board.getHospital());
+                    intent.putExtra("timestamp", board.getTimestamp());
+                    intent.putExtra("board", board.getTitle());
+                    intent.putExtra("phone", board.getName());
+
+                    startActivity(intent);
+                }
+            });
 
         }
 

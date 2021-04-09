@@ -34,7 +34,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:text="User name"
-                android:textSize="18dp" />
+                android:textSize="16dp" />
 
             <TextView
                 android:id="@+id/timestamp"
@@ -43,7 +43,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="40dp"
                 android:text="timestamp"
-                android:textSize="18dp" />
+                android:textSize="12dp" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

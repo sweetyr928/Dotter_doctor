@@ -15,11 +15,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="gujc.dotter.bot.BotActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name="gujc.dotter.SignupActivity"/>
+        <activity android:name=".ChartinfoActivity"></activity>
         <activity
-            android:name="gujc.dotter.SplashActivity"
+            android:name=".bot.BotActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SignupActivity" />
+        <activity
+            android:name=".SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -29,21 +31,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="gujc.dotter.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name="gujc.dotter.LoginActivity" />
+        <activity android:name=".LoginActivity" />
         <activity
-            android:name="gujc.dotter.chat.ChatActivity"
+            android:name=".chat.ChatActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="gujc.dotter.chat.SelectUserActivity" />
-        <activity android:name="gujc.dotter.UserPWActivity" />
+        <activity android:name=".chat.SelectUserActivity" />
+        <activity android:name=".UserPWActivity" />
         <activity
-            android:name="gujc.dotter.photoview.ViewPagerActivity"
+            android:name=".photoview.ViewPagerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name="gujc.dotter.common.MyFirebaseMessagingService">
+        <service android:name=".common.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
