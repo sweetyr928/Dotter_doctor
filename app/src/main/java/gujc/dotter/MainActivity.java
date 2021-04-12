@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.protobuf.WireFormat;
 import com.rahimlis.badgedtablayout.BadgedTabLayout;
 
 import java.util.HashMap;

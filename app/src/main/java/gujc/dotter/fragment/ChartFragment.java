@@ -75,7 +75,7 @@ public class ChartFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
         recyclerView = view.findViewById(R.id.recyclerview);
         firestoreAdapter = new Adapter(FirebaseFirestore.getInstance()
-                .collection("Board").whereEqualTo("id", myuid).orderBy("timestamp"));
+                .collection("Board").whereEqualTo("match", true).whereEqualTo("id", myuid).orderBy("timestamp"));
 
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -120,6 +120,8 @@ public class ChartFragment extends Fragment {
                     intent.putExtra("timestamp", timestamp1);
                     intent.putExtra("board", board.getTitle());
                     intent.putExtra("phone", board.getName());
+                    //intent.putExtra("chartnote", board.getchartnote());
+                    //의사소견, 결제금, 결제방법
 
                     startActivity(intent);
                 }
