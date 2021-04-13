@@ -12,6 +12,7 @@ public class Board {
     public String doctor;
     public String hospital;
     public String doctorid;
+    public String chartnote;
     public int status; // 1: 등록 2: 매칭 대기 중 3: 매칭 성공
 
     public int getStatus() { return status;}
@@ -87,4 +88,8 @@ public class Board {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public  String getChartnote() {return chartnote;}
+
+    public void setChartnote(String chartnote) {this.chartnote = chartnote; }
 }
