@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChartinfoActivity"></activity>
+        <activity android:name=".GoogleActivity"></activity>
+        <activity android:name=".ChartinfoActivity" />
         <activity
             android:name=".bot.BotActivity"
             android:theme="@style/AppTheme.NoActionBar" />
