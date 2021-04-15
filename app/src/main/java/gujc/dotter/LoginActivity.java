@@ -79,7 +79,8 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-//-----------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -133,6 +134,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //---------------------------------------------------------
+
     Button.OnClickListener loginClick = new View.OnClickListener() {
         public void onClick(View view) {
             if (!validateForm()) return;
