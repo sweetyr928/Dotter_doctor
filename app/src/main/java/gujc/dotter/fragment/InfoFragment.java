@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import gujc.dotter.InfoActivity;
+import gujc.dotter.QnAActivity;
 import gujc.dotter.R;
 
 public class InfoFragment extends Fragment {
@@ -43,7 +44,7 @@ public class InfoFragment extends Fragment {
 
     Button.OnClickListener qnaBtnClickListener = new View.OnClickListener() {
         public void onClick(final View view) {
-            //startActivity(new Intent(getActivity(), UserPWActivity.class));
+            startActivity(new Intent(getActivity(), QnAActivity.class));
         }
     };
 

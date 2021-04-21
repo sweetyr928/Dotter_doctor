@@ -18,8 +18,12 @@
         <activity android:name="gujc.dotter.bot.BotActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name="gujc.dotter.SignupActivity"/>
-        <activity android:name="gujc.dotter.InfoActivity"/>
-        <activity android:name="gujc.dotter.ChartinfoActivity"/>
+        <activity android:name="gujc.dotter.QnAActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="gujc.dotter.InfoActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="gujc.dotter.ChartinfoActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="gujc.dotter.SplashActivity"
             android:label="@string/app_name"
@@ -39,8 +43,10 @@
         <activity
             android:name="gujc.dotter.chat.ChatActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="gujc.dotter.chat.SelectUserActivity" />
-        <activity android:name="gujc.dotter.UserPWActivity" />
+        <activity android:name="gujc.dotter.chat.SelectUserActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="gujc.dotter.UserPWActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="gujc.dotter.photoview.ViewPagerActivity"
             android:theme="@style/AppTheme.NoActionBar" />
