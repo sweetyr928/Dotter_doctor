@@ -509,6 +509,15 @@ public class ChatFragment extends Fragment {
             dlg.setPositiveButton("입력", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    final DocumentReference rooms = db.getInstance().collection("rooms").document(roomID);
+
+                    rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            ChatRoomModel chatroommodel = documentSnapshot.toObject(ChatRoomModel.class);
+                            documentSnapshot.getReference().update("note",editText.getText().toString());
+                        }
+                    });
                     Toast.makeText(getContext(),"진료노트 업데이트",Toast.LENGTH_SHORT).show();
                 }
             });
@@ -520,15 +529,6 @@ public class ChatFragment extends Fragment {
             });
             dlg.show();
 
-            final DocumentReference rooms = db.getInstance().collection("rooms").document(roomID);
-
-            rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    ChatRoomModel chatroommodel = documentSnapshot.toObject(ChatRoomModel.class);
-                    documentSnapshot.getReference().update("note",editText.getText().toString());
-                }
-            });
         }
     };
 
