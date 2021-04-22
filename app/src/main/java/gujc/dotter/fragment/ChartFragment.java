@@ -30,6 +30,8 @@ import gujc.dotter.ChartinfoActivity;
 import gujc.dotter.R;
 import gujc.dotter.common.FirestoreAdapter;
 import gujc.dotter.model.Board;
+import gujc.dotter.model.ChatModel;
+import gujc.dotter.model.ChatRoomModel;
 
 public class ChartFragment extends Fragment {
     private Board chart;
@@ -135,6 +137,7 @@ public class ChartFragment extends Fragment {
         public void onBindViewHolder(ChartFragment.Holder holder, int position) {
             final DocumentSnapshot documentSnapshot = getSnapshot(position);
             final Board board = documentSnapshot.toObject(Board.class);
+            final ChatRoomModel chatModel = documentSnapshot.toObject(ChatRoomModel.class);
 
             holder.name.setText(board.getName());
             timestamp1 = simpleDateFormat.format(board.getTimestamp());
@@ -149,6 +152,7 @@ public class ChartFragment extends Fragment {
                     intent.putExtra("timestamp", timestamp1);
                     intent.putExtra("board", board.getTitle());
                     intent.putExtra("phone", board.getName());
+                    intent.putExtra("note",chatModel.getNote());
 
                     startActivity(intent);
                 }

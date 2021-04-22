@@ -1,9 +1,11 @@
 package gujc.dotter.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -24,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -74,6 +77,7 @@ import java.util.TimeZone;
 
 import gujc.dotter.R;
 import gujc.dotter.common.Util9;
+import gujc.dotter.model.Board;
 import gujc.dotter.model.ChatModel;
 import gujc.dotter.model.ChatRoomModel;
 import gujc.dotter.model.Message;
@@ -93,6 +97,7 @@ import static android.app.Activity.RESULT_OK;
 public class ChatFragment extends Fragment {
     private static final int PICK_FROM_ALBUM = 1;
     private static final int PICK_FROM_FILE = 2;
+    private static final int PICK_FROM_NOTE = 3;
     private static String rootPath = Util9.getRootPath() + "/DirectTalk9/";
 
     private Button sendBtn;
@@ -111,6 +116,7 @@ public class ChatFragment extends Fragment {
 
     private ListenerRegistration listenerRegistration;
     private FirebaseFirestore firestore=null;
+    private FirebaseFirestore db;
     private StorageReference storageReference;
     private LinearLayoutManager linearLayoutManager;
 
@@ -121,13 +127,13 @@ public class ChatFragment extends Fragment {
     public ChatFragment() {
     }
 
-    public static final ChatFragment getInstance(String toUid, String roomID, String toTitle,String toPhone) {
+    public static final ChatFragment getInstance(String toUid, String roomID,String toPhone,String toTitle) {
         ChatFragment f = new ChatFragment();
         Bundle bdl = new Bundle();
         bdl.putString("toUid", toUid);
         bdl.putString("roomID", roomID);
-        bdl.putString("toTitle", toTitle);
         bdl.putString("toPhone",toPhone);
+        bdl.putString("toTitle", toTitle);
         f.setArguments(bdl);
         return f;
     }
@@ -147,6 +153,7 @@ public class ChatFragment extends Fragment {
 
         view.findViewById(R.id.imageBtn).setOnClickListener(imageBtnClickListener);
         view.findViewById(R.id.fileBtn).setOnClickListener(fileBtnClickListener);
+        view.findViewById(R.id.noteBtn).setOnClickListener(noteBtnClickListener);
         view.findViewById(R.id.msg_input).setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -356,6 +363,7 @@ public class ChatFragment extends Fragment {
         data.put("board", toTitle);
         data.put("phone",toPhone);
         data.put("request",1);
+        data.put("note","");
 
         room.set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -489,6 +497,38 @@ public class ChatFragment extends Fragment {
             intent.setType("*/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_FROM_FILE);
+        }
+    };
+
+    Button.OnClickListener noteBtnClickListener = new View.OnClickListener() {
+        public void onClick(final View view) {
+            final EditText editText = new EditText(getContext());
+            AlertDialog.Builder dlg =  new AlertDialog.Builder(getContext());
+            dlg.setTitle("진료노트");
+            dlg.setView(editText);
+            dlg.setPositiveButton("입력", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getContext(),"진료노트 업데이트",Toast.LENGTH_SHORT).show();
+                }
+            });
+            dlg.setNegativeButton("닫기", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getContext(),"진료노트 닫기",Toast.LENGTH_SHORT).show();
+                }
+            });
+            dlg.show();
+
+            final DocumentReference rooms = db.getInstance().collection("rooms").document(roomID);
+
+            rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    ChatRoomModel chatroommodel = documentSnapshot.toObject(ChatRoomModel.class);
+                    documentSnapshot.getReference().update("note",editText.getText().toString());
+                }
+            });
         }
     };
 

@@ -51,6 +51,12 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/noteBtn"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_floatingbutton_addnote" />
+
+        <Button
             android:id="@+id/imageBtn"
             android:layout_width="40dp"
             android:layout_height="wrap_content"

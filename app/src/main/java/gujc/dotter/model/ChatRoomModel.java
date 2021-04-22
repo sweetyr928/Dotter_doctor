@@ -11,6 +11,11 @@ public class ChatRoomModel {
     private String board;
     private int idrequest;
     private String phone;
+    private String note;
+
+    public String getNote() { return note; }
+
+    public void setNote(String note) { this.note = note; }
 
     public String getPhone() { return phone; }
 

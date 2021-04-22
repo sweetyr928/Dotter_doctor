@@ -43,8 +43,7 @@
         <activity
             android:name="gujc.dotter.chat.ChatActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="gujc.dotter.chat.SelectUserActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="gujc.dotter.chat.SelectUserActivity"/>
         <activity android:name="gujc.dotter.UserPWActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity

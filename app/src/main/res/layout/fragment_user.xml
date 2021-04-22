@@ -13,7 +13,7 @@
         android:layout_margin="5dp"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@drawable/ic_floatingbutton_addimage"/>
+        android:background="@drawable/ic_floatingbutton_addnote"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"

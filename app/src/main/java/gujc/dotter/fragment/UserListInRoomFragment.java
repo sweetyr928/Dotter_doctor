@@ -85,7 +85,6 @@ public class UserListInRoomFragment extends Fragment {
                     return;
                 }
                 ChatRoomModel chatRoomModel = snapshot.toObject(ChatRoomModel.class);
-                assert chatRoomModel != null;
                 phoneNum = chatRoomModel.getPhone();
                 System.out.println(phoneNum);
             }
