@@ -16,15 +16,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Map;
 
 import gujc.dotter.ChartinfoActivity;
 import gujc.dotter.R;
@@ -32,16 +41,21 @@ import gujc.dotter.common.FirestoreAdapter;
 import gujc.dotter.model.Board;
 import gujc.dotter.model.ChatModel;
 import gujc.dotter.model.ChatRoomModel;
+import gujc.dotter.model.UserModel;
 
 public class ChartFragment extends Fragment {
     private Board chart;
     private String myuid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String dname;
     private String timestamp1;
-    private LinearLayoutManager manager;
+    public LinearLayoutManager manager;
     private RecyclerView recyclerView;
+    private FirebaseFirestore db;
     private FirestoreAdapter firestoreAdapter;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private String boardname="";
+    private String note="";
+    private FirebaseFirestore firestore;
 
 
     public ChartFragment() {
@@ -67,55 +81,15 @@ public class ChartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
         recyclerView = view.findViewById(R.id.recyclerview);
+        firestoreAdapter = new Adapter(FirebaseFirestore.getInstance()
+                .collection("Board").whereEqualTo("match", true).whereEqualTo("doctorid", myuid).orderBy("timestamp"));
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         manager.setReverseLayout(true);
-        manager.setStackFromEnd(false);
+        manager.setStackFromEnd(true);
         recyclerView.setLayoutManager(manager);
-        firestoreAdapter = new Adapter(FirebaseFirestore.getInstance()
-                .collection("Board").whereEqualTo("match", true).whereEqualTo("doctorid", myuid).orderBy("timestamp"));
         recyclerView.setAdapter(firestoreAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManagerWithSmoothScroller(getContext()));
-        recyclerView.smoothScrollToPosition(0);
-
         return view;
-    }
-
-    public class LinearLayoutManagerWithSmoothScroller extends LinearLayoutManager {
-
-        public LinearLayoutManagerWithSmoothScroller(Context context) {
-            super(context, VERTICAL, false);
-        }
-
-        public LinearLayoutManagerWithSmoothScroller(Context context, int orientation, boolean reverseLayout) {
-            super(context, orientation, reverseLayout);
-        }
-
-        @Override
-        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state,
-                                           int position) {
-            RecyclerView.SmoothScroller smoothScroller = new TopSnappedSmoothScroller(recyclerView.getContext());
-            smoothScroller.setTargetPosition(position);
-            startSmoothScroll(smoothScroller);
-        }
-
-        private class TopSnappedSmoothScroller extends LinearSmoothScroller {
-            public TopSnappedSmoothScroller(Context context) {
-                super(context);
-
-            }
-
-            @Override
-            public PointF computeScrollVectorForPosition(int targetPosition) {
-                return LinearLayoutManagerWithSmoothScroller.this
-                        .computeScrollVectorForPosition(targetPosition);
-            }
-
-            @Override
-            protected int getVerticalSnapPreference() {
-                return SNAP_TO_START;
-            }
-        }
     }
 
     class Adapter extends FirestoreAdapter<Holder> {
@@ -137,11 +111,51 @@ public class ChartFragment extends Fragment {
         public void onBindViewHolder(ChartFragment.Holder holder, int position) {
             final DocumentSnapshot documentSnapshot = getSnapshot(position);
             final Board board = documentSnapshot.toObject(Board.class);
-            final ChatRoomModel chatModel = documentSnapshot.toObject(ChatRoomModel.class);
 
+            boardname = board.getName();
             holder.name.setText(board.getName());
             timestamp1 = simpleDateFormat.format(board.getTimestamp());
             holder.timestamp.setText(timestamp1);
+
+            FirebaseFirestore.getInstance().collection("rooms")
+            .whereEqualTo("board",boardname).whereEqualTo("timestamp",timestamp1).get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                            for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
+
+                                ChatRoomModel chatRoomModel = ds.toObject(ChatRoomModel.class);
+                                note= chatRoomModel.getNote();
+                                System.out.println(note);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+
+            /*CollectionReference questionRef = firestore.collection("rooms");
+            questionRef.whereEqualTo("board",boardname).whereEqualTo("timestamp",timestamp1).get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                            for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
+                                note= ds.get("note").toString();
+                                System.out.println(note);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });*/
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -152,7 +166,7 @@ public class ChartFragment extends Fragment {
                     intent.putExtra("timestamp", timestamp1);
                     intent.putExtra("board", board.getTitle());
                     intent.putExtra("phone", board.getName());
-                    intent.putExtra("note",chatModel.getNote());
+                    intent.putExtra("note",note);
 
                     startActivity(intent);
                 }

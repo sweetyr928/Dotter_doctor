@@ -125,7 +125,7 @@
         android:id="@+id/note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="진료 노트"
+        android:hint="노트"
         android:textSize="17dp"
         android:layout_marginBottom="10dp"
         android:inputType="text" />
