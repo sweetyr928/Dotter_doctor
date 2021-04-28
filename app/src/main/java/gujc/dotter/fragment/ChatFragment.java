@@ -123,6 +123,7 @@ public class ChatFragment extends Fragment {
     private ProgressDialog progressDialog = null;
     private Integer userCount = 0;
     private String broomid = null;
+    public String note = "";
 
     public ChatFragment() {
     }
@@ -509,8 +510,8 @@ public class ChatFragment extends Fragment {
             dlg.setPositiveButton("입력", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    final DocumentReference rooms = db.getInstance().collection("rooms").document(roomID);
 
+                    final DocumentReference rooms = db.getInstance().collection("rooms").document(roomID);
                     rooms.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -518,7 +519,17 @@ public class ChatFragment extends Fragment {
                             documentSnapshot.getReference().update("note",editText.getText().toString());
                         }
                     });
+
                     Toast.makeText(getContext(),"진료노트 업데이트",Toast.LENGTH_SHORT).show();
+                    final DocumentReference board_note = db.getInstance().collection("Board").document(roomID);
+                    board_note.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            Board board = documentSnapshot.toObject(Board.class);
+                            documentSnapshot.getReference().update("note",editText.getText().toString());
+
+                        }
+                    });
                 }
             });
             dlg.setNegativeButton("닫기", new DialogInterface.OnClickListener() {
@@ -528,6 +539,8 @@ public class ChatFragment extends Fragment {
                 }
             });
             dlg.show();
+
+
 
         }
     };

@@ -117,46 +117,6 @@ public class ChartFragment extends Fragment {
             timestamp1 = simpleDateFormat.format(board.getTimestamp());
             holder.timestamp.setText(timestamp1);
 
-            FirebaseFirestore.getInstance().collection("rooms")
-            .whereEqualTo("board",boardname).whereEqualTo("timestamp",timestamp1).get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                            for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
-
-                                ChatRoomModel chatRoomModel = ds.toObject(ChatRoomModel.class);
-                                note= chatRoomModel.getNote();
-                                System.out.println(note);
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    });
-
-            /*CollectionReference questionRef = firestore.collection("rooms");
-            questionRef.whereEqualTo("board",boardname).whereEqualTo("timestamp",timestamp1).get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                            for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
-                                note= ds.get("note").toString();
-                                System.out.println(note);
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    });*/
-
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -166,7 +126,7 @@ public class ChartFragment extends Fragment {
                     intent.putExtra("timestamp", timestamp1);
                     intent.putExtra("board", board.getTitle());
                     intent.putExtra("phone", board.getName());
-                    intent.putExtra("note",note);
+                    intent.putExtra("note",board.getNote());
 
                     startActivity(intent);
                 }
