@@ -26,7 +26,6 @@ import gujc.dotter.fragment.BoardFragment;
 import gujc.dotter.fragment.ChartFragment;
 import gujc.dotter.fragment.ChatRoomFragment;
 import gujc.dotter.fragment.InfoFragment;
-import gujc.dotter.fragment.UserFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
             tabLayout.setBadgeText(1, null);
         }
 
+//        if (ContextCompat.checkSelfPermission(this.activity) {
+//        };
 
         sendRegistrationToServer();
 
