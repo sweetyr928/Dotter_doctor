@@ -2,7 +2,6 @@ package gujc.dotter.fragment;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,13 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-
-import gujc.dotter.R;
-import gujc.dotter.chat.ChatActivity;
-import gujc.dotter.common.FirestoreAdapter;
-import gujc.dotter.model.Board;
-import gujc.dotter.model.UserModel;
-
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,6 +35,12 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import gujc.dotter.R;
+import gujc.dotter.chat.ChatActivity;
+import gujc.dotter.common.FirestoreAdapter;
+import gujc.dotter.model.Board;
+import gujc.dotter.model.UserModel;
 
 public class BoardFragment extends Fragment {
 
@@ -87,17 +85,14 @@ public class BoardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_board, container, false);
 
         myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp")); // orderby 추가해야함
-
         recyclerView = view.findViewById(R.id.recyclerview);
         //recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext()),LinearLayoutManager.HORIZONTAL, false));
-
         LinearLayoutManager manager = new LinearLayoutManager(inflater.getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
-        manager.setReverseLayout(true); 
+        manager.setReverseLayout(true);
         manager.setStackFromEnd(false);
         recyclerView.setLayoutManager(manager); // timestamp 순으로 출력
+        firestoreAdapter = new BoardFragment.RecyclerViewAdapter(FirebaseFirestore.getInstance().collection("Board").orderBy("timestamp"));
         LinearSnapHelper linearSnapHelper = new SnapHelperOneByOne();
         linearSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(firestoreAdapter);
@@ -257,7 +252,7 @@ public class BoardFragment extends Fragment {
                     intent.putExtra("roomID", bid);
                     intent.putExtra("toTitle", board.getTitle());
                     startActivity(intent);
-                    Toast.makeText(getContext(), "매칭이 수락되었습니다.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getContext(), "매칭이 수락되었습니다.", Toast.LENGTH_LONG).show();
                 } else if (status == 2 && !board.isMatch()) {
                     pd.dismiss();
                     Toast.makeText(getContext(), "매칭이 거절되었습니다.", Toast.LENGTH_LONG).show();

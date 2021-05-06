@@ -3,7 +3,6 @@ package gujc.dotter.fragment;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +21,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
@@ -34,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import gujc.dotter.R;
-import gujc.dotter.chat.SelectUserActivity;
 import gujc.dotter.model.ChatRoomModel;
 import gujc.dotter.model.UserModel;
 
@@ -76,8 +74,6 @@ public class UserListInRoomFragment extends Fragment {
         recyclerView.setLayoutManager( new LinearLayoutManager((inflater.getContext())));
         recyclerView.setAdapter(new UserFragmentRecyclerViewAdapter());
 
-        System.out.println(roomID);
-
         final DocumentReference rooms = db.getInstance().collection("rooms").document(roomID);
         rooms.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -87,7 +83,6 @@ public class UserListInRoomFragment extends Fragment {
                     return;
                 }
                 ChatRoomModel chatRoomModel = snapshot.toObject(ChatRoomModel.class);
-                assert chatRoomModel != null;
                 phoneNum = chatRoomModel.getPhone();
                 System.out.println(phoneNum);
             }
