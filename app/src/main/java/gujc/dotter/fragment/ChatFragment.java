@@ -167,8 +167,8 @@ public class ChatFragment extends Fragment {
         if (getArguments() != null) {
             roomID = getArguments().getString("roomID");
             toUid = getArguments().getString("toUid");
-            toPhone = getArguments().getString("toPhone");
             toTitle = getArguments().getString("toTitle");
+            toPhone = getArguments().getString("toPhone");
         }
 
         firestore = FirebaseFirestore.getInstance();
@@ -800,12 +800,9 @@ public class ChatFragment extends Fragment {
             }
             /*messageViewHolder.timestamp.setText("");
             if (message.getTimestamp()==null) {return;}
-
             String day = dateFormatDay.format( message.getTimestamp());
             String timestamp = dateFormatHour.format( message.getTimestamp());
-
             messageViewHolder.timestamp.setText(timestamp);
-
             if (position==0) {
                 messageViewHolder.divider_date.setText(day);
                 messageViewHolder.divider.setVisibility(View.VISIBLE);
